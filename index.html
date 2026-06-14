@@ -300,13 +300,13 @@ body {
 
   var BASE        = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
   var TOTAL       = 60;
-  var PIN_D       = 1800;
-  var PIN_M       = 900;
+  var PIN_D       = 2400;
+  var PIN_M       = 1300;
   var REDUCED     = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   /* Кадры держатся на открытом столе до CLOSE_START,
-     затем складываются до CLOSE_END (40% пина). */
-  var CLOSE_START = 0.52;
-  var CLOSE_END   = 0.92;
+     затем складываются до CLOSE_END (~50% пина). */
+  var CLOSE_START = 0.48;
+  var CLOSE_END   = 0.97;
 
   function pad(i) { var s = String(i+1); while(s.length<4) s='0'+s; return s; }
   function norm(v, lo, hi) { return Math.max(0, Math.min(1, (v-lo)/(hi-lo))); }
@@ -468,7 +468,7 @@ body {
       { el: tl2,   threshold: 0.06 },   /* CSS delay 0.14s стаггерит вторую строку               */
       { el: para1, threshold: 0.18 },   /* Абзацы — стол всё ещё стоит открытым                  */
       { el: para2, threshold: 0.34 },
-      { el: punch, threshold: 0.52 }    /* Панчлайн + старт складывания — одновременно (CLOSE_START) */
+      { el: punch, threshold: 0.48 }    /* Панчлайн + старт складывания — одновременно (CLOSE_START) */
     ],
     onReduced: function() {
       [tl1, tl2, para1, para2, punch].forEach(function(el) { el.classList.add('in'); });
