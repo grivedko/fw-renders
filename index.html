@@ -298,11 +298,15 @@ body {
 (function () {
   'use strict';
 
-  var BASE    = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
-  var TOTAL   = 60;
-  var PIN_D   = 1800;
-  var PIN_M   = 900;
-  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var BASE        = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
+  var TOTAL       = 60;
+  var PIN_D       = 1800;
+  var PIN_M       = 900;
+  var REDUCED     = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Кадры держатся на открытом столе до CLOSE_START,
+     затем складываются до CLOSE_END (40% пина). */
+  var CLOSE_START = 0.52;
+  var CLOSE_END   = 0.92;
 
   function pad(i) { var s = String(i+1); while(s.length<4) s='0'+s; return s; }
   function norm(v, lo, hi) { return Math.max(0, Math.min(1, (v-lo)/(hi-lo))); }
@@ -412,8 +416,9 @@ body {
           }
         }
 
-        /* ── Frame scrub ── */
-        var fi = Math.round(smooth(norm(p, 0.05, 0.95)) * (TOTAL-1));
+        /* ── Frame scrub: кадр 0 (открытый стол) держится до CLOSE_START,
+              затем плавно складывается до CLOSE_END ── */
+        var fi = Math.round(smooth(norm(p, CLOSE_START, CLOSE_END)) * (TOTAL-1));
         if (fi !== drawnIdx) { targetIdx = fi; drawFrame(fi); }
 
         /* ── Pin state machine ── */
@@ -459,11 +464,11 @@ body {
   initSeq({
     trackId: 'f-track', sectionId: 'f-sec', canvasId: 'f-canvas',
     triggers: [
-      { el: tl1,   threshold: 0.06 },   /* Title Reveal — обе строки сразу; CSS delay стаггерит вторую */
-      { el: tl2,   threshold: 0.06 },
-      { el: para1, threshold: 0.30 },   /* Абзацы появляются последовательно во время фолда */
-      { el: para2, threshold: 0.44 },
-      { el: punch, threshold: 0.62 }    /* Панчлайн — ближе к концу фолда */
+      { el: tl1,   threshold: 0.06 },   /* Заголовок — сразу при входе; стол открыт              */
+      { el: tl2,   threshold: 0.06 },   /* CSS delay 0.14s стаггерит вторую строку               */
+      { el: para1, threshold: 0.18 },   /* Абзацы — стол всё ещё стоит открытым                  */
+      { el: para2, threshold: 0.34 },
+      { el: punch, threshold: 0.52 }    /* Панчлайн + старт складывания — одновременно (CLOSE_START) */
     ],
     onReduced: function() {
       [tl1, tl2, para1, para2, punch].forEach(function(el) { el.classList.add('in'); });
