@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Framework — Секвенция v2: масштаб и хореография</title>
+<title>Framework — Финал-кандидат: адаптивный блок секвенции</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -32,22 +32,22 @@ body {
 
 /* ════ PAGE HEADER ════ */
 .pg-hd {
-  padding: 64px var(--page-pad) 48px;
+  padding: 56px var(--page-pad) 44px;
   text-align: center;
   background: var(--color-bg);
 }
 .pg-hd__eye {
   font-size: 11px; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--color-text-3); margin-bottom: 20px;
+  color: var(--color-text-3); margin-bottom: 16px;
 }
 .pg-hd h1 {
-  font-size: clamp(24px, 3vw, 40px); font-weight: 700;
-  letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 14px;
+  font-size: clamp(22px, 2.8vw, 36px); font-weight: 700;
+  letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 12px;
 }
 .pg-hd p {
   font-size: clamp(14px, 1.3vw, 16px); color: var(--color-text-2);
-  max-width: 540px; margin: 0 auto; line-height: 1.65;
+  max-width: 520px; margin: 0 auto; line-height: 1.65;
 }
 
 /* ════ SPACER ════ */
@@ -55,306 +55,180 @@ body {
   min-height: 80vh; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   background: var(--color-bg); position: relative; z-index: 10;
-  gap: 10px; text-align: center; padding: 40px var(--page-pad);
+  text-align: center; padding: 40px var(--page-pad);
 }
-.spacer__letter {
-  font-size: clamp(100px, 16vw, 200px); font-weight: 700;
-  letter-spacing: -0.06em; color: var(--color-text);
-  opacity: 0.05; line-height: 0.85; user-select: none; margin-bottom: 8px;
+.spacer__label {
+  font-size: clamp(16px, 1.8vw, 22px); font-weight: 700; letter-spacing: -0.015em;
+  color: var(--color-text); margin-bottom: 8px;
 }
-.spacer__name { font-size: clamp(18px, 2vw, 28px); font-weight: 700; letter-spacing: -0.015em; color: var(--color-text); }
-.spacer__sub  { font-size: 14px; color: var(--color-text-2); max-width: 360px; line-height: 1.5; margin-top: 4px; }
-.spacer__arr  { margin-top: 20px; font-size: 22px; color: var(--color-accent); animation: arr 1.6s ease-in-out infinite; }
+.spacer__sub { font-size: 14px; color: var(--color-text-2); max-width: 380px; line-height: 1.5; }
+.spacer__arr { margin-top: 20px; font-size: 22px; color: var(--color-accent); animation: arr 1.6s ease-in-out infinite; }
 @keyframes arr { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
 
-/* ════ SHARED: scroll-trigger reveal classes ════ */
-/* Text fires ONCE when scroll progress crosses a threshold, then CSS plays freely */
+/* ═══════════════════════════════════════════════════════
+   SEQUENCE BLOCK — общий трек и секция
+═══════════════════════════════════════════════════════ */
+.f-track { position: relative; background: #fff; }
+
+.f-sec {
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEXT REVEAL — эффект заголовка (Apple/Linear/Vercel)
+   Строки выезжают снизу из-под невидимой маски.
+   Реализация из Side Files/effects-catalog-v2.html
+═══════════════════════════════════════════════════════ */
+.title-mask {
+  overflow: hidden;   /* маска — срезает строку снизу */
+}
+.f-h2-line {
+  display: block;
+  transform: translateY(108%);
+  opacity: 0;
+  transition:
+    transform 0.85s var(--ease),
+    opacity   0.60s ease;
+  font-size: clamp(22px, 2.8vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+.f-h2-line.in { transform: translateY(0); opacity: 1; }
+/* Стаггер второй строки через CSS delay */
+.title-mask:nth-child(2) .f-h2-line { transition-delay: 0.14s; }
+
+/* ═══════════════════════════════════════════════════════
+   FADE-UP — абзацы и панчлайн
+═══════════════════════════════════════════════════════ */
 .rev-up {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity .75s var(--ease), transform .75s var(--ease);
+  transform: translateY(22px);
+  transition:
+    opacity   0.70s var(--ease),
+    transform 0.70s var(--ease);
 }
 .rev-up.in { opacity: 1; transform: none; }
 
-.rev-x {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity .70s var(--ease), transform .70s var(--ease);
-}
-.rev-x.in { opacity: 1; transform: none; }
+/* ═══════════════════════════════════════════════════════
+   DESKTOP (≥ 768px): Sticky-split
+   Текст слева, стол справа, текст прижат к столу
+═══════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  .f-sec {
+    height: 100vh;
+    display: grid;
+    grid-template-areas:
+      "title canvas"
+      "body  canvas";
+    grid-template-columns: 38% 62%;
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(12px, 1.5vw, 24px); /* узкий зазор — текст близко к столу */
+  }
 
-.rev-left {
-  opacity: 0;
-  transform: translateX(-36px);
-  transition: opacity .70s var(--ease), transform .70s var(--ease);
-}
-.rev-left.in { opacity: 1; transform: none; }
+  .f-title-area {
+    grid-area: title;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(28px, 3.5vw, 52px) 0 clamp(16px, 2vw, 28px) clamp(24px, 4vw, 64px);
+  }
 
-/* ═══════════════════════════════════════════════════
-   A — КИНОТЕАТР
-   Продукт full-bleed, вертикально центрирован.
-   Текст появляется внизу секции — ниже продукта,
-   после того как фолд почти отыгран.
-═══════════════════════════════════════════════════ */
-.a-track { position: relative; background: #fff; }
-.a-sec {
-  background: #fff;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.a-head {
-  flex-shrink: 0;
-  padding: clamp(24px, 3vw, 40px) var(--page-pad) clamp(10px, 1.2vw, 16px);
-  text-align: center;
-}
-.a-h2 {
-  font-size: clamp(22px, 2.8vw, 44px);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  color: var(--color-text);
-}
-.a-canvas-zone {
-  flex: 1;
-  overflow: hidden;
-  background: #fff;
-  display: flex;
-  align-items: center; /* canvas вертикально по центру, излишки срезаются */
-}
-#a-canvas {
-  display: block;
-  width: 100%;
-  height: auto; /* 4:3 от ширины, срезается overflow:hidden */
-  background: #fff;
-  flex-shrink: 0;
-}
-.a-footer {
-  flex-shrink: 0;
-  padding: clamp(14px, 1.8vw, 24px) var(--page-pad) clamp(20px, 2.5vw, 36px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  text-align: center;
-  max-width: 760px;
-  width: 100%;
-  margin: 0 auto;
-}
-#a-paras { display: flex; flex-direction: column; gap: 8px; }
-.a-para  { font-size: clamp(13px, 1.2vw, 16px); color: var(--color-text-2); line-height: 1.65; }
-#a-punch {
-  font-size: clamp(17px, 2vw, 28px);
-  font-weight: 600;
-  letter-spacing: -0.018em;
-  line-height: 1.2;
-  color: var(--color-text);
-  transition-delay: 0.12s;
+  .f-canvas-area {
+    grid-area: canvas;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .f-body-area {
+    grid-area: body;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 clamp(8px, 1vw, 16px) clamp(28px, 3.5vw, 52px) clamp(24px, 4vw, 64px);
+    gap: clamp(12px, 1.5vw, 18px);
+  }
+
+  /* Desktop: всё левее, по левому краю */
+  .f-h2-line { text-align: left; }
+  .f-para    { text-align: left; font-size: clamp(13px, 1.1vw, 15px); color: var(--color-text-2); line-height: 1.7; }
+  #f-punch   { text-align: left; font-size: clamp(15px, 1.5vw, 22px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: var(--color-text); }
 }
 
-/* ═══════════════════════════════════════════════════
-   B — STICKY-SPLIT
-   62% canvas слева без рамки.
-   Текст справа появляется по очереди во время скролла.
-═══════════════════════════════════════════════════ */
-.b-track { position: relative; background: #fff; }
-.b-sec {
-  background: #fff;
-  height: 100vh;
-  display: flex;
-  overflow: hidden;
-}
-.b-left {
-  flex: 0 0 62%;
-  background: #fff;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-#b-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #fff;
-  flex-shrink: 0;
-}
-.b-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(28px, 4vw, 64px) clamp(20px, 4vw, 64px) clamp(28px, 4vw, 64px) clamp(16px, 2.5vw, 40px);
-  gap: clamp(14px, 1.8vw, 22px);
-  background: #fff;
-  overflow: hidden;
-}
-#b-h2 {
-  font-size: clamp(15px, 1.7vw, 24px);
-  font-weight: 700;
-  letter-spacing: -0.018em;
-  line-height: 1.2;
-  color: var(--color-text);
-}
-#b-para1, #b-para2 {
-  font-size: clamp(12px, 1vw, 14px);
-  color: var(--color-text-2);
-  line-height: 1.65;
-}
-#b-punch {
-  font-size: clamp(13px, 1.4vw, 19px);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
-  color: var(--color-text);
-}
-
-/* ═══════════════════════════════════════════════════
-   C — ZOOM-TO-FILL
-   Продукт стартует с воздухом, наезжает по скроллу
-   одновременно с фолдом. Самый кинематографический.
-═══════════════════════════════════════════════════ */
-.c-track { position: relative; background: #fff; }
-.c-sec {
-  background: #fff;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.c-head {
-  flex-shrink: 0;
-  padding: clamp(24px, 3vw, 40px) var(--page-pad) clamp(10px, 1.2vw, 16px);
-  text-align: center;
-}
-.c-h2 {
-  font-size: clamp(22px, 2.8vw, 44px);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  color: var(--color-text);
-}
-.c-canvas-zone {
-  flex: 1;
-  overflow: hidden;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.c-canvas-wrap {
-  /* scale driven by JS scrub */
-  transform-origin: center center;
-  will-change: transform;
-  background: #fff;
-  width: 100%;
-  line-height: 0;
-}
-#c-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #fff;
-  flex-shrink: 0;
-}
-.c-footer {
-  flex-shrink: 0;
-  padding: clamp(12px, 1.5vw, 20px) var(--page-pad) clamp(18px, 2.5vw, 32px);
-  text-align: center;
-}
-#c-punch {
-  font-size: clamp(17px, 2.2vw, 32px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: var(--color-text);
-}
-
-/* ═══════════════════════════════════════════════════
-   D — РЕДАКЦИОННЫЙ
-   Широкий воздух по бокам — продукт в белом «поле».
-   Заголовок сверху слева, текст снизу слева.
-═══════════════════════════════════════════════════ */
-.d-track { position: relative; background: #fff; }
-.d-sec {
-  background: #fff;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 0 clamp(36px, 8vw, 160px);
-  overflow: hidden;
-}
-.d-top {
-  flex-shrink: 0;
-  padding-top: clamp(28px, 3.5vw, 48px);
-  padding-bottom: clamp(8px, 1vw, 14px);
-  max-width: 580px;
-}
-#d-h2 {
-  font-size: clamp(18px, 2.2vw, 32px);
-  font-weight: 700;
-  letter-spacing: -0.022em;
-  line-height: 1.15;
-  color: var(--color-text);
-}
-.d-canvas-zone {
-  flex: 1;
-  overflow: hidden;
-  background: #fff;
-  display: flex;
-  align-items: center;
-}
-#d-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #fff;
-  flex-shrink: 0;
-}
-.d-bottom {
-  flex-shrink: 0;
-  padding-top: clamp(8px, 1vw, 14px);
-  padding-bottom: clamp(20px, 2.5vw, 36px);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 560px;
-}
-#d-para1, #d-para2 {
-  font-size: clamp(13px, 1.2vw, 16px);
-  color: var(--color-text-2);
-  line-height: 1.65;
-}
-#d-punch {
-  font-size: clamp(15px, 1.8vw, 24px);
-  font-weight: 600;
-  letter-spacing: -0.016em;
-  line-height: 1.25;
-  color: var(--color-text);
-  transition-delay: 0.08s;
-}
-
-/* ════ MOBILE ════ */
+/* ═══════════════════════════════════════════════════════
+   MOBILE (< 768px): Кинотеатр
+   Стопка: заголовок → стол → текст, плотно сверху
+═══════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  .b-sec         { flex-direction: column; height: auto; min-height: 100vh; }
-  .b-left        { flex: 0 0 auto; width: 100%; }
-  .b-right       { padding: 24px 20px 32px; gap: 14px; }
-  #b-h2          { font-size: clamp(15px, 4.5vw, 22px); }
-  #b-para1, #b-para2 { font-size: 13px; }
-  #b-punch       { font-size: clamp(14px, 4vw, 18px); }
-  .d-sec         { padding: 0 20px; }
+  .f-sec {
+    height: 100dvh; /* динамический viewport — Safari адресная строка не перекроет */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* всё плотно сверху, воздух уходит вниз */
+    padding-bottom: env(safe-area-inset-bottom, 0px); /* home indicator safety */
+  }
+
+  /* Порядок: title → canvas → body */
+  .f-title-area  { order: 1; }
+  .f-canvas-area { order: 2; }
+  .f-body-area   { order: 3; }
+
+  .f-title-area {
+    flex-shrink: 0;
+    padding: clamp(18px, 4.5vw, 28px) 20px clamp(10px, 2.5vw, 16px);
+    text-align: center;
+  }
+  .f-h2-line { font-size: clamp(18px, 5.5vw, 26px); text-align: center; }
+
+  .f-canvas-area {
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .f-body-area {
+    flex-shrink: 0;
+    padding: clamp(14px, 3.5vw, 20px) 20px clamp(16px, 4vw, 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  /* Body-абзацы — всегда левый край (требование дизайн-системы) */
+  .f-para {
+    text-align: left;
+    font-size: clamp(15px, 4vw, 17px); /* ≥ 15px, не ниже минимума 14px из design rules */
+    color: var(--color-text-2);
+    line-height: 1.65;
+  }
+  /* Панчлайн — центр на мобилке */
+  #f-punch {
+    text-align: center;
+    font-size: clamp(15px, 4.5vw, 19px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    color: var(--color-text);
+  }
+}
+
+/* Canvas — одинаково на обеих раскладках */
+#f-canvas {
+  display: block;
+  width: 100%;
+  height: auto;  /* держит 4:3 от ширины, overflow:hidden срезает лишнее */
+  background: #fff;
+  flex-shrink: 0;
 }
 
 /* ════ REDUCED MOTION ════ */
 @media (prefers-reduced-motion: reduce) {
-  .rev-up, .rev-x, .rev-left {
-    opacity: 1 !important; transform: none !important; transition: none !important;
-  }
-  .a-track, .b-track, .c-track, .d-track { height: auto !important; }
-  .a-sec, .b-sec, .c-sec, .d-sec {
-    position: static !important; top: auto !important;
-    left: auto !important; width: 100% !important; height: auto !important;
-  }
+  .f-h2-line, .rev-up { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .f-track { height: auto !important; }
+  .f-sec   { position: static !important; top: auto !important; left: auto !important; width: 100% !important; height: auto !important; }
 }
 
 /* ════ FOOTER ════ */
@@ -364,126 +238,60 @@ body {
 </head>
 <body>
 
-<!-- ═══ PAGE HEADER ═══ -->
+<!-- ═══ HEADER ═══ -->
 <header class="pg-hd">
-  <p class="pg-hd__eye">Framework — specimen v2</p>
-  <h1>Масштаб и хореография: 4 варианта</h1>
-  <p>Продукт бесшовно на белом, без рамок. Текст выезжает сам по триггеру. Фолд управляется скроллом.</p>
+  <p class="pg-hd__eye">Framework — финал-кандидат</p>
+  <h1>Адаптивный блок: Sticky-split / Кинотеатр</h1>
+  <p>Десктоп: текст слева, стол справа. Мобилка: заголовок → стол → текст. Смотри и на той, и на другой раскладке.</p>
 </header>
 
-<!-- ═══ SPACER → A ═══ -->
+<!-- ═══ SPACER ═══ -->
 <div class="spacer">
-  <div class="spacer__letter">A</div>
-  <div class="spacer__name">Кинотеатр</div>
-  <div class="spacer__sub">Продукт во всю ширину экрана. Текст — под продуктом, появляется сам когда фолд почти завершён.</div>
+  <div class="spacer__label">↓ Прокрути через блок</div>
+  <div class="spacer__sub">Заголовок появится сразу как начнёшь скроллить. Текст — поочерёдно. Фолд управляется скроллом.</div>
   <div class="spacer__arr">↓</div>
 </div>
 
-<!-- ═══ A: КИНОТЕАТР ═══ -->
-<div class="a-track" id="a-track">
-  <section class="a-sec" id="a-sec">
-    <div class="a-head">
-      <h2 class="a-h2">Стол в гостиной&nbsp;— это незакрытая задача.</h2>
-    </div>
-    <div class="a-canvas-zone">
-      <canvas id="a-canvas" width="1200" height="900"
-        role="img" aria-label="Анимация складывания стола Framework"></canvas>
-    </div>
-    <div class="a-footer">
-      <div id="a-paras" class="rev-up">
-        <p class="a-para">Каждый предмет в комнате, который напоминает о незавершённом деле, незаметно забирает внимание. Рабочий стол — самый громкий из них.</p>
-        <p class="a-para">Психологи называют это когнитивной нагрузкой: фоновый гул, который не даёт до конца отдохнуть, даже когда ноутбук закрыт.</p>
-      </div>
-      <p id="a-punch" class="rev-up">Framework убирает стол из&nbsp;поля зрения&nbsp;— и&nbsp;из&nbsp;головы.</p>
-    </div>
-  </section>
-</div>
+<!-- ═══ SEQUENCE BLOCK ═══ -->
+<div class="f-track" id="f-track">
+  <section class="f-sec" id="f-sec">
 
-<!-- ═══ SPACER → B ═══ -->
-<div class="spacer">
-  <div class="spacer__letter">B</div>
-  <div class="spacer__name">Sticky-split</div>
-  <div class="spacer__sub">62% canvas слева без рамки. Заголовок и текст справа — появляются по очереди в процессе скролла.</div>
-  <div class="spacer__arr">↓</div>
-</div>
-
-<!-- ═══ B: STICKY-SPLIT ═══ -->
-<div class="b-track" id="b-track">
-  <section class="b-sec" id="b-sec">
-    <div class="b-left">
-      <canvas id="b-canvas" width="1200" height="900"
-        role="img" aria-label="Анимация складывания стола Framework"></canvas>
-    </div>
-    <div class="b-right">
-      <h2  id="b-h2"    class="rev-x">Стол в гостиной&nbsp;— это незакрытая задача.</h2>
-      <p   id="b-para1" class="rev-x">Каждый предмет в комнате, который напоминает о незавершённом деле, незаметно забирает внимание. Рабочий стол — самый громкий из них.</p>
-      <p   id="b-para2" class="rev-x">Психологи называют это когнитивной нагрузкой: фоновый гул, который не даёт до конца отдохнуть, даже когда ноутбук закрыт.</p>
-      <p   id="b-punch" class="rev-x">Framework убирает стол из&nbsp;поля зрения&nbsp;— и&nbsp;из&nbsp;головы.</p>
-    </div>
-  </section>
-</div>
-
-<!-- ═══ SPACER → C ═══ -->
-<div class="spacer">
-  <div class="spacer__letter">C</div>
-  <div class="spacer__name">Zoom-to-fill</div>
-  <div class="spacer__sub">Продукт стартует меньше, по скроллу наезжает в фуллскрин одновременно с фолдом. Максимум драмы.</div>
-  <div class="spacer__arr">↓</div>
-</div>
-
-<!-- ═══ C: ZOOM-TO-FILL ═══ -->
-<div class="c-track" id="c-track">
-  <section class="c-sec" id="c-sec">
-    <div class="c-head">
-      <h2 id="c-h2" class="c-h2 rev-up">Стол в гостиной&nbsp;— это незакрытая задача.</h2>
-    </div>
-    <div class="c-canvas-zone">
-      <div class="c-canvas-wrap" id="c-canvas-wrap">
-        <canvas id="c-canvas" width="1200" height="900"
-          role="img" aria-label="Анимация складывания стола Framework"></canvas>
+    <!-- ЗАГОЛОВОК (на десктопе — слева сверху; на мобилке — над столом) -->
+    <div class="f-title-area">
+      <div class="title-area-inner">
+        <div class="title-mask">
+          <span class="f-h2-line" id="f-tl1">Стол в гостиной —</span>
+        </div>
+        <div class="title-mask">
+          <span class="f-h2-line" id="f-tl2">это незакрытая задача.</span>
+        </div>
       </div>
     </div>
-    <div class="c-footer">
-      <p id="c-punch" class="rev-up">Framework убирает стол из&nbsp;поля зрения&nbsp;— и&nbsp;из&nbsp;головы.</p>
-    </div>
-  </section>
-</div>
 
-<!-- ═══ SPACER → D ═══ -->
-<div class="spacer">
-  <div class="spacer__letter">D</div>
-  <div class="spacer__name">Редакционный</div>
-  <div class="spacer__sub">Большой воздух по бокам, продукт в белом «поле». Заголовок — сверху слева. Текст — снизу слева.</div>
-  <div class="spacer__arr">↓</div>
-</div>
-
-<!-- ═══ D: РЕДАКЦИОННЫЙ ═══ -->
-<div class="d-track" id="d-track">
-  <section class="d-sec" id="d-sec">
-    <div class="d-top">
-      <h2 id="d-h2" class="rev-left">Стол в гостиной&nbsp;— это незакрытая задача.</h2>
-    </div>
-    <div class="d-canvas-zone">
-      <canvas id="d-canvas" width="1200" height="900"
+    <!-- CANVAS (стол) -->
+    <div class="f-canvas-area">
+      <canvas id="f-canvas" width="1200" height="900"
         role="img" aria-label="Анимация складывания стола Framework"></canvas>
     </div>
-    <div class="d-bottom">
-      <p id="d-para1" class="rev-up">Каждый предмет в комнате, который напоминает о незавершённом деле, незаметно забирает внимание. Рабочий стол — самый громкий из них.</p>
-      <p id="d-para2" class="rev-up">Психологи называют это когнитивной нагрузкой: фоновый гул, который не даёт до конца отдохнуть, даже когда ноутбук закрыт.</p>
-      <p id="d-punch" class="rev-up">Framework убирает стол из&nbsp;поля зрения&nbsp;— и&nbsp;из&nbsp;головы.</p>
+
+    <!-- ТЕКСТ (на десктопе — слева под заголовком; на мобилке — под столом) -->
+    <div class="f-body-area">
+      <p id="f-para1" class="f-para rev-up">Каждый предмет в комнате, который напоминает о незавершённом деле, незаметно забирает внимание. Рабочий стол — самый громкий из них.</p>
+      <p id="f-para2" class="f-para rev-up">Психологи называют это когнитивной нагрузкой: фоновый гул, который не даёт до конца отдохнуть, даже когда ноутбук закрыт.</p>
+      <p id="f-punch" class="rev-up">Framework убирает стол из&nbsp;поля зрения&nbsp;— и&nbsp;из&nbsp;головы.</p>
     </div>
+
   </section>
 </div>
 
-<!-- ═══ FINAL SPACER ═══ -->
+<!-- ═══ AFTER SPACER ═══ -->
 <div class="spacer">
-  <p class="spacer__sub" style="font-size:16px;line-height:1.65;max-width:400px;color:var(--color-text-2);">
-    Все 4 варианта просмотрено.<br>Какой масштаб берём в финал?
-  </p>
+  <div class="spacer__label">Это финал-кандидат</div>
+  <div class="spacer__sub">Если всё устраивает — переносим в index.html. Если нужны правки — говори что именно.</div>
 </div>
 
 <footer class="pg-ft">
-  <p>Framework — sequence-wow-specimen-2.html</p>
+  <p>Framework — sequence-wow-final.html</p>
 </footer>
 
 <script>
@@ -492,27 +300,19 @@ body {
 
   var BASE    = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
   var TOTAL   = 60;
-  var PIN_D   = 1800;   /* чуть длиннее для комфорта */
+  var PIN_D   = 1800;
   var PIN_M   = 900;
   var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function pad(i) {
-    var s = String(i + 1);
-    while (s.length < 4) s = '0' + s;
-    return s;
-  }
-  function norm(v, lo, hi) { return Math.max(0, Math.min(1, (v - lo) / (hi - lo))); }
-  function smooth(t)        { return t * t * (3 - 2 * t); /* smoothstep */ }
+  function pad(i) { var s = String(i+1); while(s.length<4) s='0'+s; return s; }
+  function norm(v, lo, hi) { return Math.max(0, Math.min(1, (v-lo)/(hi-lo))); }
+  function smooth(t) { return t*t*(3-2*t); }
 
-  /* ══════════════════════════════════════════════════
-     Shared sequence engine
-
-     cfg:
-       trackId, sectionId, canvasId
-       triggers: [{el, threshold}]   — one-shot: fires .in when p >= threshold
-       onScrub:  fn(p)               — continuous scrub callback (e.g. zoom)
-       onReduced: fn()               — make all text visible immediately
-  ══════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════
+     Sequence engine
+     cfg: { trackId, sectionId, canvasId, triggers, onReduced }
+     triggers: [{el, threshold}] — fire .in once when p >= threshold
+  ══════════════════════════════════════════════ */
   function initSeq(cfg) {
     var track   = document.getElementById(cfg.trackId);
     var section = document.getElementById(cfg.sectionId);
@@ -527,8 +327,8 @@ body {
 
     function nearestLoaded(i) {
       for (var d = 0; d < TOTAL; d++) {
-        if (i - d >= 0    && loaded[i - d]) return i - d;
-        if (i + d < TOTAL && loaded[i + d]) return i + d;
+        if (i-d >= 0    && loaded[i-d]) return i-d;
+        if (i+d < TOTAL && loaded[i+d]) return i+d;
       }
       return -1;
     }
@@ -539,11 +339,10 @@ body {
       drawnIdx = use;
     }
 
-    /* Preload all 60 frames */
     for (var i = 0; i < TOTAL; i++) {
-      (function (i) {
+      (function(i) {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function() {
           loaded[i] = true;
           if (drawnIdx === -1 && i === 0) drawFrame(0);
           else if (i === targetIdx)        drawFrame(targetIdx);
@@ -553,16 +352,16 @@ body {
       })(i);
     }
 
-    /* Reduced-motion: last frame + reveal all text */
+    /* Reduced-motion: last frame + show all text */
     if (REDUCED) {
       var last = new Image();
-      last.onload = function () { ctx.drawImage(last, 0, 0, canvas.width, canvas.height); };
-      last.src = BASE + pad(TOTAL - 1) + '.webp';
+      last.onload = function() { ctx.drawImage(last, 0, 0, canvas.width, canvas.height); };
+      last.src = BASE + pad(TOTAL-1) + '.webp';
       if (cfg.onReduced) cfg.onReduced();
       return;
     }
 
-    /* ── JS pin (position:fixed approach, Tilda-safe) ── */
+    /* ── JS pin: position:fixed approach, Tilda-safe ── */
     var pinState = '';
     var rafId    = null;
 
@@ -595,7 +394,7 @@ body {
 
     function onScroll() {
       if (rafId) return;
-      rafId = requestAnimationFrame(function () {
+      rafId = requestAnimationFrame(function() {
         rafId = null;
         var PIN      = getPin();
         var sy       = window.pageYOffset;
@@ -613,11 +412,8 @@ body {
           }
         }
 
-        /* ── Continuous scrub (optional, e.g. zoom-to-fill) ── */
-        if (cfg.onScrub) cfg.onScrub(p);
-
-        /* ── Frame scrub: full range 0.05 → 0.95 ── */
-        var fi = Math.round(smooth(norm(p, 0.05, 0.95)) * (TOTAL - 1));
+        /* ── Frame scrub ── */
+        var fi = Math.round(smooth(norm(p, 0.05, 0.95)) * (TOTAL-1));
         if (fi !== drawnIdx) { targetIdx = fi; drawFrame(fi); }
 
         /* ── Pin state machine ── */
@@ -638,103 +434,39 @@ body {
     applyPin('before', getPin());
     onScroll();
     window.addEventListener('scroll',            onScroll,  { passive: true });
-    window.addEventListener('resize', function () { sizeTrack(); pinState = ''; onScroll(); }, { passive: true });
-    window.addEventListener('load',   function () { sizeTrack(); pinState = ''; onScroll(); });
-    window.addEventListener('orientationchange', function () {
-      setTimeout(function () { sizeTrack(); pinState = ''; onScroll(); }, 300);
+    window.addEventListener('resize', function() { sizeTrack(); pinState = ''; onScroll(); }, { passive: true });
+    window.addEventListener('load',   function() { sizeTrack(); pinState = ''; onScroll(); });
+    window.addEventListener('orientationchange', function() {
+      setTimeout(function() { sizeTrack(); pinState = ''; onScroll(); }, 300);
     });
   }
 
+  /* ════════════════════════════════════════════════
+     Инициализация блока
 
-  /* ════════════════════════════
-     A — КИНОТЕАТР
-     Текст появляется когда фолд почти завершён (p > 0.78)
-  ════════════════════════════ */
-  var aParas = document.getElementById('a-paras');
-  var aPunch = document.getElementById('a-punch');
-  initSeq({
-    trackId: 'a-track', sectionId: 'a-sec', canvasId: 'a-canvas',
-    triggers: [
-      { el: aParas, threshold: 0.78 },
-      { el: aPunch, threshold: 0.85 }
-    ],
-    onReduced: function () {
-      aParas.classList.add('in');
-      aPunch.classList.add('in');
-    }
-  });
+     Заголовок (Text Reveal):
+       tl1, tl2 — обе строки запускаются при p ≥ 0.06,
+       CSS transition-delay 0.14s на второй строке даёт стаггер.
 
-
-  /* ════════════════════════════
-     B — STICKY-SPLIT
-     Элементы выезжают последовательно во время фолда
-  ════════════════════════════ */
-  var bH2    = document.getElementById('b-h2');
-  var bPara1 = document.getElementById('b-para1');
-  var bPara2 = document.getElementById('b-para2');
-  var bPunch = document.getElementById('b-punch');
-  initSeq({
-    trackId: 'b-track', sectionId: 'b-sec', canvasId: 'b-canvas',
-    triggers: [
-      { el: bH2,    threshold: 0.06 },   /* сразу как пин начался */
-      { el: bPara1, threshold: 0.22 },
-      { el: bPara2, threshold: 0.40 },
-      { el: bPunch, threshold: 0.62 }
-    ],
-    onReduced: function () {
-      [bH2, bPara1, bPara2, bPunch].forEach(function (el) { el.classList.add('in'); });
-    }
-  });
-
-
-  /* ════════════════════════════
-     C — ZOOM-TO-FILL
-     Скейл непрерывный (scrub), текст — триггер
-  ════════════════════════════ */
-  var cH2   = document.getElementById('c-h2');
-  var cPunch= document.getElementById('c-punch');
-  var cWrap = document.getElementById('c-canvas-wrap');
-
-  /* Начальный масштаб: 0.58 → 1.00 */
-  if (cWrap) cWrap.style.transform = 'scale(0.58)';
+     Текст body — поочерёдно через нарастающие пороги.
+  ════════════════════════════════════════════════ */
+  var tl1   = document.getElementById('f-tl1');
+  var tl2   = document.getElementById('f-tl2');
+  var para1 = document.getElementById('f-para1');
+  var para2 = document.getElementById('f-para2');
+  var punch = document.getElementById('f-punch');
 
   initSeq({
-    trackId: 'c-track', sectionId: 'c-sec', canvasId: 'c-canvas',
+    trackId: 'f-track', sectionId: 'f-sec', canvasId: 'f-canvas',
     triggers: [
-      { el: cH2,    threshold: 0.04 },   /* заголовок сразу */
-      { el: cPunch, threshold: 0.85 }    /* панчлайн в конце */
+      { el: tl1,   threshold: 0.06 },   /* Title Reveal — обе строки сразу; CSS delay стаггерит вторую */
+      { el: tl2,   threshold: 0.06 },
+      { el: para1, threshold: 0.30 },   /* Абзацы появляются последовательно во время фолда */
+      { el: para2, threshold: 0.44 },
+      { el: punch, threshold: 0.62 }    /* Панчлайн — ближе к концу фолда */
     ],
-    onScrub: function (p) {
-      /* scale: 0.58 → 1.00 плавно через smoothstep */
-      var s = 0.58 + smooth(norm(p, 0.04, 0.88)) * 0.42;
-      cWrap.style.transform = 'scale(' + s + ')';
-    },
-    onReduced: function () {
-      cH2.classList.add('in');
-      cPunch.classList.add('in');
-      if (cWrap) cWrap.style.transform = 'scale(1)';
-    }
-  });
-
-
-  /* ════════════════════════════
-     D — РЕДАКЦИОННЫЙ
-     Заголовок — сразу. Текст — после фолда.
-  ════════════════════════════ */
-  var dH2    = document.getElementById('d-h2');
-  var dPara1 = document.getElementById('d-para1');
-  var dPara2 = document.getElementById('d-para2');
-  var dPunch = document.getElementById('d-punch');
-  initSeq({
-    trackId: 'd-track', sectionId: 'd-sec', canvasId: 'd-canvas',
-    triggers: [
-      { el: dH2,    threshold: 0.04 },
-      { el: dPara1, threshold: 0.72 },
-      { el: dPara2, threshold: 0.78 },
-      { el: dPunch, threshold: 0.85 }
-    ],
-    onReduced: function () {
-      [dH2, dPara1, dPara2, dPunch].forEach(function (el) { el.classList.add('in'); });
+    onReduced: function() {
+      [tl1, tl2, para1, para2, punch].forEach(function(el) { el.classList.add('in'); });
     }
   });
 
