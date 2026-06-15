@@ -1653,8 +1653,8 @@ img, video { display: block; max-width: 100%; }
      Хореография: стол открыт → текст → складывание + панчлайн одновременно
   ══════════════════════════════════════ */
   (function () {
-    var BASE        = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
-    var TOTAL       = 60;
+    var BASE        = 'https://cdn.jsdelivr.net/gh/grivedko/fw-renders@main/';
+    var TOTAL       = 120;
     var PIN_D       = 2400;
     var PIN_M       = 1300;
     var NAVBAR_H    = 56; /* высота Tilda-навбара */
@@ -1676,8 +1676,11 @@ img, video { display: block; max-width: 100%; }
       var ctx      = canvas.getContext('2d');
       var frames   = new Array(TOTAL);
       var loaded   = new Array(TOTAL);
-      var drawnIdx = -1;
-      var targetIdx = 0;
+      var drawnIdx     = -1;
+      var currentFrame = 0;   /* float — текущее состояние интерполяции */
+      var targetFrame  = 0;   /* float — цель (задаётся из onScroll) */
+      var animRunning  = false;
+      var EASE         = 0.15; /* 0.12–0.18: больше — резче, меньше — инертнее */
 
       function nearestLoaded(i) {
         for (var d = 0; d < TOTAL; d++) {
@@ -1695,13 +1698,36 @@ img, video { display: block; max-width: 100%; }
         drawnIdx = use;
       }
 
+      /* Интерполяционный цикл: плавно догоняет targetFrame, сам останавливается */
+      function animLoop() {
+        var diff = targetFrame - currentFrame;
+        if (Math.abs(diff) < 0.35) {
+          currentFrame = targetFrame;
+          animRunning  = false;
+        } else {
+          currentFrame += diff * EASE;
+        }
+        var idx = Math.round(currentFrame);
+        if (idx !== drawnIdx) drawFrame(idx);
+        if (animRunning) requestAnimationFrame(animLoop);
+      }
+      function kickAnim() {
+        if (!animRunning) { animRunning = true; requestAnimationFrame(animLoop); }
+      }
+
+      function ready(i) {
+        loaded[i] = true;
+        if (drawnIdx === -1 && i === 0) drawFrame(0);
+        else if (Math.round(currentFrame) === i) drawFrame(i);
+      }
       for (var i = 0; i < TOTAL; i++) {
         (function(i) {
           var img = new Image();
           img.onload = function() {
-            loaded[i] = true;
-            if (drawnIdx === -1 && i === 0) drawFrame(0);
-            else if (i === targetIdx)        drawFrame(targetIdx);
+            /* decode() снимает нагрузку с главного потока при первом drawImage */
+            (img.decode ? img.decode() : Promise.resolve())
+              .then(function() { ready(i); })
+              .catch(function() { ready(i); });
           };
           img.src = BASE + pad(i) + '.webp';
           frames[i] = img;
@@ -1771,9 +1797,9 @@ img, video { display: block; max-width: 100%; }
             }
           }
 
-          /* Frame scrub: открытый стол держится до CLOSE_START, потом складывается */
-          var fi = Math.round(smooth(norm(p, CLOSE_START, CLOSE_END)) * (TOTAL-1));
-          if (fi !== drawnIdx) { targetIdx = fi; drawFrame(fi); }
+          /* Frame scrub: цель задаётся по скроллу, отрисовка — через animLoop (интерполяция) */
+          targetFrame = smooth(norm(p, CLOSE_START, CLOSE_END)) * (TOTAL-1);
+          kickAnim();
 
           /* Pin state machine */
           var newState = sy < pinStart          ? 'before'
