@@ -3,92 +3,306 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Framework — Финал-кандидат: адаптивный блок секвенции</title>
+<title>Framework — демо главной страницы 11.06</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 
-/* ════ TOKENS ════ */
+/* ═══════════════════════════════════════════════════
+   0. DESIGN TOKENS
+═══════════════════════════════════════════════════ */
 :root {
-  --color-bg:    #f5f1ea;
-  --color-text:  #1a1814;
-  --color-text-2:#7a7060;
-  --color-text-3:#b0a898;
-  --color-accent:#b46428;
-  --font-main:   'Raleway', sans-serif;
-  --page-pad:    clamp(20px, 5vw, 80px);
-  --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+  --color-bg:           #f5f1ea;
+  --color-surface:      #ede8df;
+  --color-surface-2:    #e8e2d8;
+  --color-border:       rgba(0,0,0,0.08);
+  --color-text:         #1a1814;
+  --color-text-2:       #7a7060;
+  --color-text-3:       #b0a898;
+  --color-accent:       #b46428;
+  --color-accent-hover: #c47438;
+  --font-main:          'Raleway', sans-serif;
+  --text-xs:   13px;
+  --text-sm:   14px;
+  --text-base: 16px;
+  --text-md:   19px;
+  --text-lg:   24px;
+  --text-xl:   clamp(32px, 4vw, 48px);
+  --text-2xl:  clamp(44px, 6vw, 72px);
+  --text-hero: clamp(56px, 8vw, 96px);
+  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --space-10: 40px; --space-12: 48px; --space-16: 64px;
+  --space-20: 80px;
+  --radius-sm:   6px;  --radius-md: 10px;
+  --radius-lg:   16px; --radius-xl: 24px;
+  --radius-pill: 100px;
+  --shadow-sm: 0 1px 4px rgba(26,24,20,0.06);
+  --shadow-md: 0 4px 16px rgba(26,24,20,0.10);
+  --shadow-lg: 0 8px 32px rgba(26,24,20,0.14);
+  --shadow-card:  0 10px 40px rgba(0,0,0,0.06);
+  --ease-out:    cubic-bezier(0.16,1,0.3,1);
+  --ease-in-out: cubic-bezier(0.4,0,0.2,1);
+  --grid-max:     1200px;
+  --page-pad:     clamp(20px,5vw,80px);
+  --section-py:   clamp(64px,8vw,120px);
 }
 
+/* ═══════════════════════════════════════════════════
+   0B. GLOBAL
+═══════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-main);
-  background: var(--color-bg);
+  font-size: var(--text-base);
   color: var(--color-text);
-  overflow-x: hidden;
-}
-
-/* ════ PAGE HEADER ════ */
-.pg-hd {
-  padding: 56px var(--page-pad) 44px;
-  text-align: center;
   background: var(--color-bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip; /* clip (not hidden) — hidden creates scroll context on iOS, breaking position:sticky */
 }
-.pg-hd__eye {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--color-text-3); margin-bottom: 16px;
-}
-.pg-hd h1 {
-  font-size: clamp(22px, 2.8vw, 36px); font-weight: 700;
-  letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 12px;
-}
-.pg-hd p {
-  font-size: clamp(14px, 1.3vw, 16px); color: var(--color-text-2);
-  max-width: 520px; margin: 0 auto; line-height: 1.65;
+a { color: inherit; text-decoration: none; }
+img, video { display: block; max-width: 100%; }
+
+.inner {
+  max-width: var(--grid-max);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
 }
 
-/* ════ SPACER ════ */
-.spacer {
-  min-height: 80vh; display: flex; flex-direction: column;
+/* ═══════════════════════════════════════════════════
+   0C. PLACEHOLDER UTILITY  (.ph)
+═══════════════════════════════════════════════════ */
+.ph {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  background: var(--color-bg); position: relative; z-index: 10;
-  text-align: center; padding: 40px var(--page-pad);
+  gap: 10px;
+  padding: 20px;
+  text-align: center;
 }
-.spacer__label {
-  font-size: clamp(16px, 1.8vw, 22px); font-weight: 700; letter-spacing: -0.015em;
-  color: var(--color-text); margin-bottom: 8px;
+.ph__tag {
+  position: absolute;
+  bottom: 12px; left: 12px;
+  font-family: var(--font-main);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.50);
+  background: rgba(0,0,0,0.25);
+  border: 1px dashed rgba(255,255,255,0.22);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  pointer-events: none;
+  z-index: 3;
 }
-.spacer__sub { font-size: 14px; color: var(--color-text-2); max-width: 380px; line-height: 1.5; }
-.spacer__arr { margin-top: 20px; font-size: 22px; color: var(--color-accent); animation: arr 1.6s ease-in-out infinite; }
-@keyframes arr { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
+.ph__tag--dark {
+  color: rgba(26,24,20,0.45);
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.14);
+}
 
-/* ═══════════════════════════════════════════════════════
-   SEQUENCE BLOCK — общий трек и секция
-═══════════════════════════════════════════════════════ */
-.f-track { position: relative; background: #fff; }
+/* ═══════════════════════════════════════════════════
+   0D. REVEAL UTILITIES (JS-driven via IntersectionObserver)
+═══════════════════════════════════════════════════ */
+/* TEXT REVEAL — masked overflow, word slides up */
+.reveal-wrap { overflow: hidden; display: block; }
+.reveal-inner {
+  display: block;
+  transform: translateY(108%);
+  transition: transform 0.65s var(--ease-out);
+  will-change: transform;
+}
+.reveal-inner.in { transform: translateY(0); }
+
+/* FADE UP — generic appear */
+[data-fade] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  will-change: opacity, transform;
+}
+[data-fade].in { opacity: 1; transform: translateY(0); }
+
+/* STAGGER ITEMS */
+.stagger-item {
+  opacity: 0; transform: translateX(-20px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  will-change: opacity, transform;
+}
+.stagger-item.in { opacity: 1; transform: translateX(0); }
+
+/* CLIP-PATH WIPE (Effect 03) */
+[data-wipe] {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s var(--ease-out);
+  will-change: clip-path;
+}
+[data-wipe].in { clip-path: inset(0 0% 0 0); }
+
+/* SCALE TRANSITION (Fullscreen) */
+[data-scale] {
+  opacity: 0; transform: scale(0.93);
+  transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
+  will-change: opacity, transform;
+}
+[data-scale].in { opacity: 1; transform: scale(1); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-main); font-weight: 600;
+  border-radius: var(--radius-pill); border: none; cursor: pointer;
+  text-decoration: none !important; white-space: nowrap;
+  position: relative; overflow: hidden;
+  transition: transform 0.12s ease;
+}
+.btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  transform: translateX(-101%);
+  transition: transform 0.4s var(--ease-out);
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+}
+.btn:hover::before { transform: translateX(0); }
+.btn span { position: relative; z-index: 1; }
+.btn:active { transform: scale(0.97); }
+.btn-accent {
+  background: var(--color-accent); color: #fff !important;
+  font-size: 17px; padding: 14px 32px;
+}
+.btn-accent::before { background: #fff; }
+.btn-accent:hover { background: var(--color-accent); }
+.btn-accent:hover span { color: var(--color-accent) !important; }
+.btn-white {
+  background: #fff; color: var(--color-text) !important;
+  font-size: 17px; padding: 14px 32px;
+}
+.btn-white::before { background: var(--color-accent); }
+.btn-white:hover { background: #fff; }
+.btn-white:hover span { color: #fff !important; }
+
+/* ═══════════════════════════════════════════════════
+   2. HERO — 100vh, crossfade работа ↔ отдых
+═══════════════════════════════════════════════════ */
+.fw-hero {
+  position: relative; width: 100%; height: 100vh; min-height: 640px;
+  overflow: hidden; display: flex; align-items: center;
+}
+.fw-hero__bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+.fw-hero__bg--work {
+  background-image: url('https://static.tildacdn.com/tild3863-3564-4932-b861-306436663863/Open2-2.webp');
+  background-color: #241e14;
+  animation: bg-work 9s ease-in-out infinite;
+}
+.fw-hero__bg--rest {
+  background-image: url('https://static.tildacdn.com/tild3965-6166-4439-a633-343038333863/Closed2-2.webp');
+  background-color: #182028;
+  animation: bg-rest 9s ease-in-out infinite;
+}
+@keyframes bg-work {
+  0%,44%{opacity:1} 50%,94%{opacity:0} 100%{opacity:1}
+}
+@keyframes bg-rest {
+  0%,44%{opacity:0} 50%,94%{opacity:1} 100%{opacity:0}
+}
+.fw-hero__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.50) 30%,
+    rgba(0,0,0,0.16) 62%, rgba(0,0,0,0) 85%);
+  z-index: 1;
+}
+.fw-hero__content {
+  position: relative; z-index: 2;
+  padding: 0 0 0 max(80px,8%);
+  max-width: 860px; width: 100%;
+}
+.fw-hero__content::before {
+  content: '';
+  position: absolute;
+  inset: -28px -36px -36px -36px;
+  background: rgba(0,0,0,0.30);
+  border-radius: var(--radius-xl);
+  z-index: -1;
+  pointer-events: none;
+}
+.fw-hero__eyebrow {
+  font-size: var(--text-base); font-weight: 400;
+  color: rgba(255,255,255,0.58); display: block; margin-bottom: var(--space-5);
+}
+.fw-hero__h1 {
+  font-size: clamp(36px,5.5vw,64px); font-weight: 700;
+  color: #fff; letter-spacing: -0.025em; line-height: 1.06;
+  margin-bottom: var(--space-5);
+}
+/* Rotating word */
+.fw-hero__rotator {
+  display: block; height: 1.1em; overflow: hidden;
+  position: relative; width: 100%;
+  /* A1: меньше чем h1, чтобы длинные фразы влезали в одну строку на мобиле */
+  font-size: clamp(22px, 4vw, 50px);
+}
+.fw-hero__rword {
+  position: absolute; left: 0; top: 0; white-space: nowrap;
+  line-height: 1.1; color: var(--color-accent);
+  opacity: 0; transform: translateY(110%);
+  transition: transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
+  will-change: transform,opacity;
+}
+.fw-hero__rword.is-active { opacity: 1; transform: translateY(0); }
+.fw-hero__rword.is-exit   { opacity: 0; transform: translateY(-110%); }
+.fw-hero__rword.is-instant { transition: none; }
+.fw-hero__sub {
+  font-size: var(--text-md); font-weight: 300;
+  color: rgba(255,255,255,0.76); line-height: 1.4; margin-bottom: var(--space-10);
+}
+.fw-hero__cta-group { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.fw-hero__trust { font-size: var(--text-base); color: rgba(255,255,255,0.52); }
+.fw-hero__scroll {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center;
+  gap: var(--space-2); transition: opacity 0.3s;
+}
+.fw-hero__scroll span { font-size: var(--text-xs); color: rgba(255,255,255,0.28); letter-spacing: 0.1em; }
+.fw-hero__scroll-line {
+  width: 1px; height: 36px; background: rgba(255,255,255,0.20);
+  transform-origin: top;
+  animation: scrollline 1.8s cubic-bezier(0.4,0,0.2,1) infinite;
+}
+@keyframes scrollline {
+  0%   { transform: scaleY(0); transform-origin: top;    opacity: 1; }
+  50%  { transform: scaleY(1); transform-origin: top;    opacity: 1; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════
+   3. PROBLEM — sticky image-sequence scroll-scrub (новый блок)
+═══════════════════════════════════════════════════ */
+.f-track {
+  position: relative;
+  background: linear-gradient(180deg, #f0ebe2 0%, #e6ddcf 100%);
+}
 
 .f-sec {
-  background: #fff;
+  background: linear-gradient(180deg, #f0ebe2 0%, #e6ddcf 100%);
   overflow: hidden;
 }
 
-/* ═══════════════════════════════════════════════════════
-   TEXT REVEAL — эффект заголовка (Apple/Linear/Vercel)
-   Строки выезжают снизу из-под невидимой маски.
-   Реализация из Side Files/effects-catalog-v2.html
-═══════════════════════════════════════════════════════ */
-.title-mask {
-  overflow: hidden;   /* маска — срезает строку снизу */
-}
+/* Text Reveal — заголовок */
+.title-mask { overflow: hidden; }
 .f-h2-line {
   display: block;
   transform: translateY(108%);
   opacity: 0;
   transition:
-    transform 0.85s var(--ease),
+    transform 0.85s var(--ease-out),
     opacity   0.60s ease;
   font-size: clamp(22px, 2.8vw, 42px);
   font-weight: 700;
@@ -97,166 +311,852 @@ body {
   color: var(--color-text);
 }
 .f-h2-line.in { transform: translateY(0); opacity: 1; }
-/* Стаггер второй строки через CSS delay */
 .title-mask:nth-child(2) .f-h2-line { transition-delay: 0.14s; }
 
-/* ═══════════════════════════════════════════════════════
-   FADE-UP — абзацы и панчлайн
-═══════════════════════════════════════════════════════ */
+/* Fade-up — абзацы и панчлайн */
 .rev-up {
   opacity: 0;
   transform: translateY(22px);
   transition:
-    opacity   0.70s var(--ease),
-    transform 0.70s var(--ease);
+    opacity   0.70s var(--ease-out),
+    transform 0.70s var(--ease-out);
 }
 .rev-up.in { opacity: 1; transform: none; }
 
-/* ═══════════════════════════════════════════════════════
-   DESKTOP (≥ 768px): Sticky-split
-   Текст слева, стол справа, текст прижат к столу
-═══════════════════════════════════════════════════════ */
+/* Desktop ≥768px: Sticky-split */
 @media (min-width: 768px) {
   .f-sec {
-    height: 100vh;
+    height: calc(100vh - 56px); /* 56px = навбар Tilda */
     display: grid;
     grid-template-areas:
       "title canvas"
       "body  canvas";
     grid-template-columns: 38% 62%;
     grid-template-rows: auto 1fr;
-    column-gap: clamp(12px, 1.5vw, 24px); /* узкий зазор — текст близко к столу */
+    column-gap: clamp(12px, 1.5vw, 24px);
   }
-
   .f-title-area {
     grid-area: title;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: clamp(28px, 3.5vw, 52px) 0 clamp(16px, 2vw, 28px) clamp(24px, 4vw, 64px);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: clamp(28px,3.5vw,52px) 0 clamp(16px,2vw,28px) clamp(24px,4vw,64px);
   }
-
   .f-canvas-area {
     grid-area: canvas;
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     overflow: hidden;
-    background: #fff;
+    background: transparent;
   }
-
   .f-body-area {
     grid-area: body;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 clamp(8px, 1vw, 16px) clamp(28px, 3.5vw, 52px) clamp(24px, 4vw, 64px);
-    gap: clamp(12px, 1.5vw, 18px);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 clamp(8px,1vw,16px) clamp(28px,3.5vw,52px) clamp(24px,4vw,64px);
+    gap: clamp(12px,1.5vw,18px);
   }
-
-  /* Desktop: всё левее, по левому краю */
   .f-h2-line { text-align: left; }
-  .f-para    { text-align: left; font-size: clamp(13px, 1.1vw, 15px); color: var(--color-text-2); line-height: 1.7; }
-  #f-punch   { text-align: left; font-size: clamp(15px, 1.5vw, 22px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: var(--color-text); }
+  .f-para { text-align: left; font-size: clamp(13px,1.1vw,15px); color: var(--color-text-2); line-height: 1.7; }
+  #f-punch { text-align: left; font-size: clamp(15px,1.5vw,22px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: var(--color-text); }
 }
 
-/* ═══════════════════════════════════════════════════════
-   MOBILE (< 768px): Кинотеатр
-   Стопка: заголовок → стол → текст, плотно сверху
-═══════════════════════════════════════════════════════ */
+/* Mobile <768px: Кинотеатр */
 @media (max-width: 767px) {
   .f-sec {
-    height: 100dvh; /* динамический viewport — Safari адресная строка не перекроет */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* всё плотно сверху, воздух уходит вниз */
-    padding-bottom: env(safe-area-inset-bottom, 0px); /* home indicator safety */
+    height: calc(100dvh - 56px);
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-
-  /* Порядок: title → canvas → body */
-  .f-title-area  { order: 1; }
-  .f-canvas-area { order: 2; }
-  .f-body-area   { order: 3; }
-
-  .f-title-area {
-    flex-shrink: 0;
-    padding: clamp(18px, 4.5vw, 28px) 20px clamp(10px, 2.5vw, 16px);
-    text-align: center;
-  }
-  .f-h2-line { font-size: clamp(18px, 5.5vw, 26px); text-align: center; }
-
-  .f-canvas-area {
-    flex-shrink: 0;
-    overflow: hidden;
-    background: #fff;
-  }
-
-  .f-body-area {
-    flex-shrink: 0;
-    padding: clamp(14px, 3.5vw, 20px) 20px clamp(16px, 4vw, 24px);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  /* Body-абзацы — всегда левый край (требование дизайн-системы) */
-  .f-para {
-    text-align: left;
-    font-size: clamp(15px, 4vw, 17px); /* ≥ 15px, не ниже минимума 14px из design rules */
-    color: var(--color-text-2);
-    line-height: 1.65;
-  }
-  /* Панчлайн — центр на мобилке */
-  #f-punch {
-    text-align: center;
-    font-size: clamp(15px, 4.5vw, 19px);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.25;
-    color: var(--color-text);
-  }
+  .f-title-area  { order: 1; flex-shrink: 0; padding: clamp(18px,4.5vw,28px) 20px clamp(10px,2.5vw,16px); text-align: center; }
+  .f-canvas-area { order: 2; flex-shrink: 0; overflow: hidden; background: transparent; }
+  .f-body-area   { order: 3; flex-shrink: 0; padding: clamp(14px,3.5vw,20px) 20px clamp(16px,4vw,24px); display: flex; flex-direction: column; gap: 12px; }
+  .f-h2-line { font-size: clamp(18px,5.5vw,26px); text-align: center; }
+  .f-para { text-align: left; font-size: clamp(15px,4vw,17px); color: var(--color-text-2); line-height: 1.65; }
+  #f-punch { text-align: center; font-size: clamp(15px,4.5vw,19px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: var(--color-text); }
 }
 
-/* Canvas — одинаково на обеих раскладках */
+/* Canvas — прозрачный фон, рисует сквозь градиент секции */
 #f-canvas {
   display: block;
-  width: 100%;
-  height: auto;  /* держит 4:3 от ширины, overflow:hidden срезает лишнее */
-  background: #fff;
+  width: 100%; height: auto;
+  background: transparent;
   flex-shrink: 0;
 }
 
-/* ════ REDUCED MOTION ════ */
 @media (prefers-reduced-motion: reduce) {
   .f-h2-line, .rev-up { opacity: 1 !important; transform: none !important; transition: none !important; }
   .f-track { height: auto !important; }
   .f-sec   { position: static !important; top: auto !important; left: auto !important; width: 100% !important; height: auto !important; }
 }
 
-/* ════ FOOTER ════ */
-.pg-ft { padding: 56px var(--page-pad); text-align: center; background: var(--color-bg); }
-.pg-ft p { font-size: 13px; color: var(--color-text-3); }
+/* ═══════════════════════════════════════════════════
+   4. PSYCHOLOGY — тёмная секция, Split Panels
+═══════════════════════════════════════════════════ */
+.fw-focus {
+  background: #18140e; width: 100%;
+  padding: var(--section-py) var(--page-pad);
+}
+.fw-focus__inner {
+  max-width: var(--grid-max); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px,6vw,80px); align-items: start;
+}
+.fw-focus__eyebrow {
+  font-size: var(--text-xs); font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.1em; display: block; margin-bottom: var(--space-5);
+  text-transform: uppercase;
+}
+.fw-focus__h2 {
+  font-size: clamp(26px,3.5vw,44px); font-weight: 700;
+  color: #fff; letter-spacing: -0.02em; line-height: 1.12;
+  margin-bottom: var(--space-8);
+}
+.fw-focus__body {
+  font-size: var(--text-base); color: rgba(255,255,255,0.60);
+  line-height: 1.65; margin-bottom: var(--space-5); text-align: left;
+}
+.fw-focus__punchline {
+  font-size: var(--text-md); font-weight: 300;
+  color: #fff; line-height: 1.4;
+  padding-top: var(--space-8);
+  border-top: 1px solid rgba(255,255,255,0.10);
+  margin-top: var(--space-3);
+}
+
+/* SPLIT PANELS (Effect 5) */
+.split-wrap {
+  display: flex; height: 440px;
+  border-radius: var(--radius-xl); overflow: hidden; cursor: pointer;
+}
+.split-panel {
+  flex: 1; position: relative; overflow: hidden;
+  transition: flex 0.55s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: flex-end;
+  padding: var(--space-8);
+}
+.split-panel:nth-child(1) { background: #2e2010; }
+.split-panel:nth-child(2) { background: #101e2a; }
+.split-wrap:hover .split-panel { flex: 0.32; }
+.split-wrap:hover .split-panel:hover { flex: 3; }
+
+.split-panel__label {
+  font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.10); backdrop-filter: blur(8px);
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+.split-panel__desc {
+  font-size: var(--text-sm); color: rgba(255,255,255,0.55);
+  line-height: 1.4; max-width: 200px;
+  /* A2: схлопываем чтобы высота не влияла на положение лейбла соседней панели */
+  max-height: 0; overflow: hidden; padding-top: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s, max-height 0.4s ease, padding-top 0.3s ease;
+}
+.split-wrap:hover .split-panel:hover .split-panel__desc {
+  max-height: 120px; padding-top: var(--space-3);
+  opacity: 1;
+}
+/* Фикс: при hover затемнять неактивные панели без скачков */
+.split-panel > div {
+  transition: opacity 0.3s ease;
+}
+.split-wrap:hover .split-panel > div {
+  opacity: 0.12;
+}
+.split-wrap:hover .split-panel:hover > div {
+  opacity: 1;
+}
+.split-panel__ph-tag {
+  position: absolute; top: var(--space-5); right: var(--space-5);
+  font-size: var(--text-xs); color: rgba(255,255,255,0.20);
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm); padding: 4px 8px; line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════
+   5. CANVAS SELECTION — fullscreen, Scale Transition
+═══════════════════════════════════════════════════ */
+.fw-canvas {
+  position: relative; width: 100%; height: 100vh; min-height: 640px;
+  overflow: hidden; display: flex; align-items: flex-end;
+}
+.fw-canvas__bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+.fw-canvas__bg:nth-child(1) { background-color: #5a4a3a; animation: cv 16s ease-in-out infinite 0s;  }
+.fw-canvas__bg:nth-child(2) { background-color: #38485a; animation: cv 16s ease-in-out infinite 4s;  }
+.fw-canvas__bg:nth-child(3) { background-color: #485a38; animation: cv 16s ease-in-out infinite 8s;  }
+.fw-canvas__bg:nth-child(4) { background-color: #5a3848; animation: cv 16s ease-in-out infinite 12s; }
+@keyframes cv {
+  0%,20%{opacity:1} 25%,95%{opacity:0} 100%{opacity:1}
+}
+.fw-canvas__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.22) 50%, rgba(0,0,0,0) 100%);
+  z-index: 1;
+}
+.fw-canvas__ph-tag {
+  position: absolute; top: var(--space-8); right: var(--page-pad);
+  font-size: var(--text-xs); color: rgba(255,255,255,0.28);
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: var(--radius-sm); padding: 6px 12px; z-index: 2;
+  line-height: 1.4;
+}
+.fw-canvas__content {
+  position: relative; z-index: 2; width: 100%;
+  padding: 0 var(--page-pad) clamp(60px,8vw,100px);
+  max-width: calc(var(--grid-max) + 160px); margin: 0 auto;
+}
+.fw-canvas__h2 {
+  font-size: clamp(28px,4vw,54px); font-weight: 700;
+  color: #fff; letter-spacing: -0.02em; line-height: 1.1;
+  margin-bottom: var(--space-4); max-width: 600px;
+}
+.fw-canvas__sub {
+  font-size: var(--text-base); color: rgba(255,255,255,0.70);
+  line-height: 1.55; margin-bottom: var(--space-10); max-width: 440px;
+}
+/* Thumb strip */
+.fw-canvas__thumbs-outer {
+  position: relative; margin-bottom: var(--space-8);
+}
+/* Правый fade — сигнал что можно листать */
+.fw-canvas__thumbs-outer::after {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: var(--space-2);
+  width: 56px;
+  background: linear-gradient(to left, rgba(0,0,0,0.55), transparent);
+  pointer-events: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+/* Подсказка «листайте» — только на мобиле */
+.fw-canvas__thumbs-hint {
+  display: none;
+  font-size: var(--text-xs); color: rgba(255,255,255,0.40);
+  letter-spacing: 0.06em; margin-bottom: var(--space-3);
+}
+.fw-canvas__thumbs {
+  display: flex; gap: var(--space-3); overflow-x: auto;
+  padding-bottom: var(--space-2); scrollbar-width: none;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+}
+.fw-canvas__thumbs::-webkit-scrollbar { display: none; }
+.fw-canvas__thumb {
+  flex-shrink: 0; width: 68px; height: 86px;
+  border-radius: var(--radius-md); overflow: hidden; cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.18);
+  transition: border-color 0.2s;
+  scroll-snap-align: start;
+}
+.fw-canvas__thumb:hover { border-color: rgba(255,255,255,0.65); }
+.fw-canvas__thumb-fill { width: 100%; height: 100%; }
+.fw-canvas__thumb:nth-child(1) .fw-canvas__thumb-fill { background: #5a4a3a; }
+.fw-canvas__thumb:nth-child(2) .fw-canvas__thumb-fill { background: #38485a; }
+.fw-canvas__thumb:nth-child(3) .fw-canvas__thumb-fill { background: #485a38; }
+.fw-canvas__thumb:nth-child(4) .fw-canvas__thumb-fill { background: #5a3848; }
+.fw-canvas__thumb:nth-child(5) .fw-canvas__thumb-fill { background: #3a5a4a; }
+.fw-canvas__thumb:nth-child(6) .fw-canvas__thumb-fill { background: #4a3a5a; }
+.fw-canvas__thumb:nth-child(7) .fw-canvas__thumb-fill { background: #2a5a4a; }
+.fw-canvas__thumb:nth-child(8) .fw-canvas__thumb-fill { background: #6a4a2a; }
+.fw-canvas__thumb:nth-child(9) .fw-canvas__thumb-fill { background: #2a3a5a; }
+.fw-canvas__thumb:nth-child(10) .fw-canvas__thumb-fill { background: #5a3a2a; }
+
+/* ═══════════════════════════════════════════════════
+   6. LIFESTYLE GALLERY — Stagger, 3D Tilt, Clip-path Hover
+═══════════════════════════════════════════════════ */
+.fw-life {
+  background: var(--color-bg); width: 100%;
+  padding: var(--section-py) var(--page-pad);
+}
+.fw-life__inner { max-width: var(--grid-max); margin: 0 auto; }
+.fw-life__head { text-align: center; margin-bottom: clamp(40px,5vw,64px); }
+.fw-life__h2 {
+  font-size: clamp(26px,3.5vw,44px); font-weight: 700;
+  color: var(--color-text); letter-spacing: -0.02em; line-height: 1.1;
+}
+.fw-life__sub {
+  font-size: var(--text-base); color: var(--color-text-2);
+  line-height: 1.6; max-width: 520px; margin: var(--space-4) auto 0;
+  text-align: center;
+}
+.fw-life__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-4);
+}
+
+/* Card: 3D Tilt + Clip-path Hover */
+.life-card {
+  border-radius: var(--radius-lg); overflow: hidden;
+  position: relative; cursor: pointer;
+  transform-style: preserve-3d;
+  transition: box-shadow 0.3s var(--ease-out);
+  will-change: transform;
+}
+/* Bento layout — компактные карточки */
+.life-card:nth-child(1) { grid-column: span 4; aspect-ratio: 4/3; }
+.life-card:nth-child(2) { grid-column: span 2; aspect-ratio: 3/4; }
+.life-card:nth-child(3) { grid-column: span 2; aspect-ratio: 3/4; }
+.life-card:nth-child(4) { grid-column: span 4; aspect-ratio: 4/3; }
+.life-card:nth-child(5) { grid-column: span 3; aspect-ratio: 1/1; }
+.life-card:nth-child(6) { grid-column: span 3; aspect-ratio: 1/1; }
+.life-card__bg { position: absolute; inset: 0; }
+.life-card:nth-child(1) .life-card__bg { background: #4a6858; }
+.life-card:nth-child(2) .life-card__bg { background: #6a5248; }
+.life-card:nth-child(3) .life-card__bg { background: #485868; }
+.life-card:nth-child(4) .life-card__bg { background: #7a6048; }
+.life-card:nth-child(5) .life-card__bg { background: #4a5870; }
+.life-card:nth-child(6) .life-card__bg { background: #6a4848; }
+
+.life-card__ph-tag {
+  position: absolute; bottom: 12px; left: 12px;
+  font-size: var(--text-xs); color: rgba(255,255,255,0.48);
+  background: rgba(0,0,0,0.22);
+  border: 1px dashed rgba(255,255,255,0.20);
+  border-radius: var(--radius-sm); padding: 5px 10px; z-index: 1; line-height: 1.4;
+}
+
+/* CLIP-PATH HOVER overlay */
+.life-card__hover {
+  position: absolute; inset: 0;
+  background: rgba(180,100,40,0.82);
+  clip-path: circle(0% at 50% 105%);
+  transition: clip-path 0.5s var(--ease-out);
+  display: flex; align-items: flex-end; padding: var(--space-6);
+  z-index: 2;
+}
+.life-card:hover .life-card__hover { clip-path: circle(150% at 50% 105%); }
+.life-card__hover-text {
+  font-size: var(--text-base); font-weight: 600; color: #fff; line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════════════════
+   7. SPECS "Гордимся этими параметрами"
+═══════════════════════════════════════════════════ */
+.fw-specs {
+  background: var(--color-surface); width: 100%;
+  padding: var(--section-py) var(--page-pad);
+}
+.fw-specs__inner { max-width: var(--grid-max); margin: 0 auto; }
+.fw-specs__head {
+  text-align: center; margin-bottom: clamp(40px,5vw,64px);
+}
+.fw-specs__h2 {
+  font-size: clamp(26px,3.5vw,44px); font-weight: 700;
+  color: var(--color-text); letter-spacing: -0.02em; line-height: 1.12;
+  margin-bottom: var(--space-4);
+}
+.fw-specs__hero-sub {
+  font-size: var(--text-base); color: var(--color-text-2);
+  line-height: 1.6; max-width: 560px; margin: 0 auto;
+}
+
+/* 4 big counters */
+.fw-specs__counters {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: var(--space-8);
+  padding-bottom: clamp(40px,5vw,64px);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: clamp(40px,5vw,64px);
+}
+.fw-specs__stat { text-align: center; }
+.fw-specs__counter-wrap { display: flex; align-items: baseline; gap: var(--space-2); justify-content: center; }
+.fw-specs__counter-num {
+  font-size: clamp(52px,7vw,88px); font-weight: 700;
+  color: var(--color-accent); letter-spacing: -0.04em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.fw-specs__counter-unit {
+  font-size: clamp(20px,2.5vw,30px); font-weight: 300;
+  color: var(--color-text-2); letter-spacing: -0.01em; line-height: 1;
+}
+.fw-specs__stat-label {
+  font-size: var(--text-sm); color: var(--color-text-2);
+  margin-top: var(--space-3); line-height: 1.4;
+}
+
+/* Stagger list */
+.fw-specs__list { list-style: none; }
+.fw-specs__list-item {
+  display: grid;
+  grid-template-columns: 130px 1fr 2fr;
+  gap: var(--space-6); align-items: baseline;
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--color-border);
+  opacity: 0; transform: translateX(-20px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  will-change: opacity, transform;
+}
+.fw-specs__list-item.in { opacity: 1; transform: translateX(0); }
+.fw-specs__list-item:last-child { border-bottom: none; }
+.fw-specs__list-val {
+  font-size: var(--text-md); font-weight: 700;
+  color: var(--color-text); letter-spacing: -0.02em;
+}
+.fw-specs__list-name {
+  font-size: var(--text-base); font-weight: 600;
+  color: var(--color-text);
+}
+.fw-specs__list-desc {
+  font-size: var(--text-base); color: var(--color-text-2);
+  line-height: 1.55; text-align: left;
+}
+
+/* ═══════════════════════════════════════════════════
+   MARQUEE BAND — Infinite Marquee
+═══════════════════════════════════════════════════ */
+.fw-marquee {
+  background: var(--color-text); overflow: hidden; padding: 14px 0; width: 100%;
+}
+/* Marquee внутри hero — абсолютно позиционирован у низа */
+.fw-hero .fw-marquee {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.42);
+  z-index: 2;
+}
+.fw-marquee__track {
+  display: flex; width: max-content;
+  animation: marquee-anim 22s linear infinite;
+}
+.fw-marquee__item {
+  flex-shrink: 0; padding: 0 var(--space-10);
+  font-size: var(--text-base); font-weight: 400;
+  color: rgba(245,241,234,0.60); white-space: nowrap;
+}
+.fw-marquee__item::after {
+  content: ' ·'; color: var(--color-accent); margin-left: var(--space-10);
+}
+@keyframes marquee-anim {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════════
+   8. INSTALLATION — Stagger, Counter
+═══════════════════════════════════════════════════ */
+.fw-install {
+  background: var(--color-bg); width: 100%;
+  padding: var(--section-py) var(--page-pad);
+}
+.fw-install__inner { max-width: var(--grid-max); margin: 0 auto; }
+.fw-install__head { text-align: center; margin-bottom: clamp(40px,5vw,64px); }
+.fw-install__count-row {
+  display: flex; align-items: baseline; justify-content: center;
+  gap: var(--space-2); margin-bottom: var(--space-4);
+}
+.fw-install__count-num {
+  font-size: clamp(48px,7vw,80px); font-weight: 700;
+  color: var(--color-accent); letter-spacing: -0.04em; line-height: 1;
+}
+.fw-install__count-unit {
+  font-size: clamp(20px,2.5vw,28px); font-weight: 300; color: var(--color-text-2);
+}
+.fw-install__count-prefix {
+  font-size: clamp(20px,2.5vw,28px); font-weight: 300;
+  color: var(--color-text-2); align-self: baseline;
+}
+.fw-install__h2 {
+  font-size: clamp(26px,3.5vw,44px); font-weight: 700;
+  color: var(--color-text); letter-spacing: -0.02em;
+  line-height: 1.1; margin-bottom: var(--space-2);
+}
+.fw-install__sub {
+  font-size: var(--text-base); color: var(--color-text-2);
+  line-height: 1.6; max-width: 520px; margin: 0 auto;
+}
+.fw-install__grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-5);
+}
+
+.step-card { display: flex; flex-direction: column; }
+.step-card__img {
+  border-radius: var(--radius-lg); overflow: hidden;
+  aspect-ratio: 4/3; margin-bottom: var(--space-5);
+  position: relative;
+}
+.step-card:nth-child(1) .step-card__img { background: #4a6858; }
+.step-card:nth-child(2) .step-card__img { background: #485868; }
+.step-card:nth-child(3) .step-card__img { background: #6a5248; }
+.step-card__num {
+  font-size: var(--text-xs); font-weight: 600;
+  color: var(--color-accent); letter-spacing: 0.06em; margin-bottom: var(--space-2);
+}
+.step-card__title {
+  font-size: var(--text-md); font-weight: 600;
+  color: var(--color-text); letter-spacing: -0.01em; margin-bottom: var(--space-2);
+}
+.step-card__desc {
+  font-size: var(--text-base); color: var(--color-text-2);
+  line-height: 1.55; text-align: left;
+}
+
+/* ═══════════════════════════════════════════════════
+   9. MANIFESTO — Text Reveal, Clip-path Wipe
+═══════════════════════════════════════════════════ */
+.fw-mani {
+  background: var(--color-surface-2); width: 100%;
+  padding: var(--section-py) var(--page-pad);
+}
+.fw-mani__inner {
+  max-width: var(--grid-max); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px,6vw,80px); align-items: start;
+}
+/* Media column */
+.fw-mani__media { display: flex; flex-direction: column; gap: var(--space-4); }
+.fw-mani__img-main {
+  border-radius: var(--radius-lg); overflow: hidden;
+  aspect-ratio: 16/9; position: relative;
+  background: #2a2018;
+}
+.fw-mani__img-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.fw-mani__img-small {
+  border-radius: var(--radius-md); overflow: hidden;
+  aspect-ratio: 1/1; position: relative;
+}
+.fw-mani__img-small:nth-child(1) { background: #3a4828; }
+.fw-mani__img-small:nth-child(2) { background: #283848; }
+
+/* Text column */
+.fw-mani__text { display: flex; flex-direction: column; }
+.fw-mani__h2 {
+  font-size: clamp(26px,3.5vw,44px); font-weight: 700;
+  color: var(--color-text); letter-spacing: -0.02em;
+  line-height: 1.12; margin-bottom: var(--space-8);
+}
+.fw-mani__lead {
+  font-size: var(--text-md); font-weight: 600;
+  color: var(--color-text); line-height: 1.45;
+  margin-bottom: var(--space-6); text-align: left;
+}
+.fw-mani__body {
+  font-size: var(--text-base); color: var(--color-text-2);
+  line-height: 1.65; margin-bottom: var(--space-5); text-align: left;
+}
+.fw-mani__punchline {
+  font-size: var(--text-md); font-weight: 700;
+  color: var(--color-text); letter-spacing: -0.01em;
+  line-height: 1.35; padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ═══════════════════════════════════════════════════
+   10. FINAL CTA — тёмная секция, Scale + Text Reveal
+═══════════════════════════════════════════════════ */
+.fw-cta {
+  position: relative; background: #16120c;
+  min-height: 100vh; display: flex; align-items: center;
+  justify-content: center; overflow: hidden;
+  padding: var(--section-py) var(--page-pad); width: 100%;
+}
+.fw-cta__glow {
+  position: absolute; width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(180,100,40,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none; z-index: 0;
+}
+.fw-cta__content {
+  position: relative; z-index: 1;
+  text-align: center; max-width: 740px;
+}
+.fw-cta__eyebrow {
+  font-size: var(--text-xs); letter-spacing: 0.10em;
+  color: var(--color-accent); display: block; margin-bottom: var(--space-6);
+}
+.fw-cta__h2 {
+  font-size: clamp(32px,5vw,64px); font-weight: 700;
+  color: #fff; letter-spacing: -0.025em;
+  line-height: 1.05; margin-bottom: var(--space-10);
+}
+.fw-cta__trust {
+  font-size: var(--text-sm); color: rgba(255,255,255,0.35);
+  margin-top: var(--space-6); letter-spacing: 0.03em;
+}
+
+/* ═══════════════════════════════════════════════════
+   11. FOOTER
+═══════════════════════════════════════════════════ */
+.fw-footer {
+  background: #121008; width: 100%;
+  padding: clamp(48px,7vw,80px) var(--page-pad) clamp(28px,3vw,40px);
+}
+.fw-footer__inner { max-width: var(--grid-max); margin: 0 auto; }
+/* Trust row */
+.fw-footer__trust {
+  display: flex; gap: var(--space-8); flex-wrap: wrap;
+  padding-bottom: var(--space-10);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: var(--space-10);
+}
+.fw-footer__trust-item {
+  display: flex; align-items: center; gap: var(--space-3);
+}
+.fw-footer__trust-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  background: rgba(180,100,40,0.15); display: flex;
+  align-items: center; justify-content: center; font-size: 16px;
+}
+.fw-footer__trust-text { font-size: var(--text-sm); color: rgba(255,255,255,0.58); }
+/* Main grid */
+.fw-footer__top {
+  display: grid; grid-template-columns: 240px 1fr;
+  gap: var(--space-12); padding-bottom: var(--space-10);
+  border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: var(--space-8);
+}
+.fw-footer__logo {
+  font-size: 20px; font-weight: 700;
+  color: #fff !important; letter-spacing: -0.01em; display: block; margin-bottom: var(--space-3);
+}
+.fw-footer__logo-accent { color: var(--color-accent); }
+.fw-footer__tagline { font-size: var(--text-sm); color: rgba(255,255,255,0.38); line-height: 1.55; }
+.fw-footer__cols { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--space-8); }
+.fw-footer__col-title {
+  font-size: var(--text-xs); font-weight: 600;
+  color: rgba(255,255,255,0.32); letter-spacing: 0.07em; margin-bottom: var(--space-4);
+}
+.fw-footer__links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.fw-footer__links a { font-size: var(--text-sm); color: rgba(255,255,255,0.62) !important; transition: color 0.15s; }
+.fw-footer__links a:hover { color: #fff !important; }
+.fw-footer__links .soon { color: rgba(255,255,255,0.24) !important; pointer-events: none; }
+/* Bottom */
+.fw-footer__bottom {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);
+}
+.fw-footer__copy { font-size: var(--text-xs); color: rgba(255,255,255,0.24); }
+.fw-footer__legal { display: flex; gap: var(--space-6); flex-wrap: wrap; }
+.fw-footer__legal a { font-size: var(--text-xs); color: rgba(255,255,255,0.24) !important; transition: color 0.15s; }
+.fw-footer__legal a:hover { color: rgba(255,255,255,0.55) !important; }
+
+/* ═══════════════════════════════════════════════════
+   10. URGENCY CTA — таймер обратного отсчёта
+═══════════════════════════════════════════════════ */
+.fw-urgency {
+  background: #16120c; width: 100%;
+  padding: var(--section-py) var(--page-pad);
+  text-align: center; position: relative; overflow: hidden;
+}
+.fw-urgency::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(180,100,40,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.fw-urgency__inner {
+  position: relative; z-index: 1;
+  max-width: 680px; margin: 0 auto;
+}
+.fw-urgency__eyebrow {
+  font-size: var(--text-xs); font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-accent); text-transform: uppercase;
+  margin-bottom: var(--space-6);
+}
+.fw-urgency__h2 {
+  font-size: clamp(32px,5vw,60px); font-weight: 700;
+  color: #fff; letter-spacing: -0.025em;
+  line-height: 1.1; margin-bottom: var(--space-4);
+}
+.fw-urgency__sub {
+  font-size: var(--text-base); color: rgba(255,255,255,0.52);
+  line-height: 1.6; margin-bottom: var(--space-10);
+}
+.fw-urgency__countdown {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--space-4); margin-bottom: var(--space-10);
+}
+.fw-urgency__cd-block {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--radius-md);
+  padding: 20px 32px; min-width: 94px;
+}
+.fw-urgency__cd-num {
+  font-size: clamp(38px,4.5vw,52px); font-weight: 700;
+  line-height: 1; font-variant-numeric: tabular-nums;
+  color: var(--color-accent); letter-spacing: -0.02em;
+}
+.fw-urgency__cd-label {
+  font-size: var(--text-xs); font-weight: 400;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+.fw-urgency__cd-sep {
+  font-size: 32px; font-weight: 300;
+  color: rgba(255,255,255,0.18); line-height: 1;
+  align-self: flex-start; padding-top: 18px;
+}
+.fw-urgency__btn {
+  font-size: 18px !important; padding: 18px 44px !important;
+  margin-bottom: var(--space-5);
+}
+.fw-urgency__micro {
+  font-size: var(--text-sm); color: rgba(255,255,255,0.28);
+  letter-spacing: 0.03em;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 834px) {
+  .fw-hero__content { padding-left: max(32px,5%); }
+
+  .fw-focus__inner { grid-template-columns: 1fr; }
+  .split-wrap { height: 260px; }
+
+  /* «Вписывается везде» → горизонтальная лента с подсматриванием */
+  .fw-life__grid {
+    display: flex; flex-wrap: nowrap; overflow-x: auto;
+    scroll-snap-type: x mandatory; gap: var(--space-4);
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--space-2);
+  }
+  .fw-life__grid::-webkit-scrollbar { display: none; }
+  .fw-life__grid .life-card {
+    flex: 0 0 76%; scroll-snap-align: start; aspect-ratio: 4/5;
+    grid-column: auto;
+  }
+
+  .fw-specs__counters { grid-template-columns: repeat(2,1fr); gap: var(--space-6); }
+  .fw-specs__list-item { grid-template-columns: 100px 1fr; }
+  .fw-specs__list-desc { display: none; }
+
+  .fw-install__grid { grid-template-columns: 1fr; gap: var(--space-8); }
+
+  .fw-mani__inner { grid-template-columns: 1fr; }
+
+  .fw-footer__top { grid-template-columns: 1fr; gap: var(--space-8); }
+  .fw-footer__cols { grid-template-columns: repeat(2,1fr); }
+
+}
+
+@media (max-width: 640px) {
+  .fw-hero { align-items: flex-end; }
+  .fw-hero__content { padding: 0 24px clamp(72px,12vw,100px); max-width: 100%; }
+  .fw-hero__overlay {
+    background: linear-gradient(to top,
+      rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.20) 60%, rgba(0,0,0,0) 100%);
+  }
+  /* На телефоне карточки чуть шире — подсматривание меньше */
+  .fw-life__grid .life-card { flex: 0 0 84%; }
+  .fw-specs__counters { grid-template-columns: repeat(2,1fr); }
+  .fw-specs__list-item { grid-template-columns: 1fr; gap: var(--space-2); padding: var(--space-4) 0; }
+  .fw-specs__list-desc { display: none; }
+  .fw-footer__trust { flex-direction: column; gap: var(--space-4); }
+  .fw-footer__cols { grid-template-columns: 1fr 1fr; }
+  .fw-footer__bottom { flex-direction: column; align-items: flex-start; }
+  .fw-footer__legal { flex-direction: column; gap: var(--space-3); }
+  .fw-canvas__thumbs-hint { display: block; }
+  .fw-urgency__countdown { gap: var(--space-2); }
+  .fw-urgency__cd-block { padding: 14px 18px; min-width: 72px; }
+  .fw-urgency__cd-num { font-size: 30px; }
+  .fw-urgency__cd-sep { font-size: 24px; padding-top: 14px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .fw-hero__bg--work { animation: none; opacity: 1; }
+  .fw-hero__bg--rest { animation: none; opacity: 0; }
+  .fw-hero__rword    { transition: none; }
+  .fw-hero__scroll-line { animation: none; }
+  .fw-canvas__bg     { animation: none !important; }
+  .fw-canvas__bg:nth-child(1) { opacity: 1 !important; }
+  .fw-canvas__bg:nth-child(2),
+  .fw-canvas__bg:nth-child(3),
+  .fw-canvas__bg:nth-child(4) { opacity: 0 !important; }
+  .fw-marquee__track { animation: none; }
+
+  .reveal-inner, [data-fade], .stagger-item, [data-wipe], [data-scale] {
+    opacity: 1 !important; transform: none !important;
+    clip-path: none !important; transition: none !important;
+  }
+}
+
 </style>
 </head>
+
 <body>
 
-<!-- ═══ HEADER ═══ -->
-<header class="pg-hd">
-  <p class="pg-hd__eye">Framework — финал-кандидат</p>
-  <h1>Адаптивный блок: Sticky-split / Кинотеатр</h1>
-  <p>Десктоп: текст слева, стол справа. Мобилка: заголовок → стол → текст. Смотри и на той, и на другой раскладке.</p>
-</header>
+<!-- ════════════════════════════════════════════
+     2. HERO — crossfade работа ↔ отдых, Text Reveal
+════════════════════════════════════════════ -->
+<section class="fw-hero" id="fw-hero">
+  <!-- Background: work scene (dark warm) -->
+  <div class="fw-hero__bg fw-hero__bg--work"></div>
+  <!-- Background: rest scene (dark cool) -->
+  <div class="fw-hero__bg fw-hero__bg--rest"></div>
+  <div class="fw-hero__overlay"></div>
 
-<!-- ═══ SPACER ═══ -->
-<div class="spacer">
-  <div class="spacer__label">↓ Прокрути через блок</div>
-  <div class="spacer__sub">Заголовок появится сразу как начнёшь скроллить. Текст — поочерёдно. Фолд управляется скроллом.</div>
-  <div class="spacer__arr">↓</div>
-</div>
+  <div class="fw-hero__content" id="fw-hero-content">
+    <span class="fw-hero__eyebrow">Настенный складной стол Framework</span>
 
-<!-- ═══ SEQUENCE BLOCK ═══ -->
+    <h1 class="fw-hero__h1">
+      Стол,&nbsp;который
+      <span class="fw-hero__rotator" id="fw-rotator" aria-live="polite">
+        <span class="fw-hero__rword is-active">становится&nbsp;картиной</span>
+        <span class="fw-hero__rword">очищает&nbsp;комнату</span>
+        <span class="fw-hero__rword">прячет&nbsp;работу</span>
+        <span class="fw-hero__rword">экономит&nbsp;пространство</span>
+        <span class="fw-hero__rword">возвращает&nbsp;уют</span>
+        <span class="fw-hero__rword">завершает&nbsp;рабочий&nbsp;день</span>
+        <span class="fw-hero__rword">украшает&nbsp;комнату</span>
+      </span>
+    </h1>
+
+    <p class="fw-hero__sub">Закрываешь — и комната снова твоя.</p>
+
+    <div class="fw-hero__cta-group">
+      <a class="btn btn-white" href="/compare"><span>Подобрать для себя</span></a>
+      <span class="fw-hero__trust">Выдерживает до 60 кг · 10 уникальных картин или напечатаем вашу</span>
+    </div>
+  </div>
+
+  <div class="fw-hero__scroll" id="fw-hero-scroll" style="z-index:3">
+    <span>Скролл</span>
+    <div class="fw-hero__scroll-line"></div>
+  </div>
+
+  <!-- Marquee band at hero bottom -->
+  <div class="fw-marquee" aria-hidden="true">
+    <div class="fw-marquee__track">
+      <span class="fw-marquee__item">Сделано в России</span>
+      <span class="fw-marquee__item">Доставка по всей РФ</span>
+      <span class="fw-marquee__item">Гарантия 1 год</span>
+      <span class="fw-marquee__item">ЛДСП и МДФ Egger</span>
+      <span class="fw-marquee__item">Холст галерейного качества</span>
+      <span class="fw-marquee__item">8 точек крепления</span>
+      <span class="fw-marquee__item">60 кг нагрузка</span>
+      <span class="fw-marquee__item">Монтаж 20 минут</span>
+      <span class="fw-marquee__item">10 полотен на выбор</span>
+      <span class="fw-marquee__item">Ваше фото на полотне</span>
+      <span class="fw-marquee__item">Сделано в России</span>
+      <span class="fw-marquee__item">Доставка по всей РФ</span>
+      <span class="fw-marquee__item">Гарантия 1 год</span>
+      <span class="fw-marquee__item">ЛДСП и МДФ Egger</span>
+      <span class="fw-marquee__item">Холст галерейного качества</span>
+      <span class="fw-marquee__item">8 точек крепления</span>
+      <span class="fw-marquee__item">60 кг нагрузка</span>
+      <span class="fw-marquee__item">Монтаж 20 минут</span>
+      <span class="fw-marquee__item">10 полотен на выбор</span>
+      <span class="fw-marquee__item">Ваше фото на полотне</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     3. PROBLEM — sticky image-sequence scroll-scrub (новый блок)
+════════════════════════════════════════════ -->
 <div class="f-track" id="f-track">
   <section class="f-sec" id="f-sec">
 
-    <!-- ЗАГОЛОВОК (на десктопе — слева сверху; на мобилке — над столом) -->
+    <!-- ЗАГОЛОВОК: десктоп — слева сверху; мобилка — над столом -->
     <div class="f-title-area">
       <div class="title-area-inner">
         <div class="title-mask">
@@ -268,13 +1168,13 @@ body {
       </div>
     </div>
 
-    <!-- CANVAS (стол) -->
+    <!-- CANVAS: стол, кадры с прозрачным фоном -->
     <div class="f-canvas-area">
       <canvas id="f-canvas" width="1200" height="900"
         role="img" aria-label="Анимация складывания стола Framework"></canvas>
     </div>
 
-    <!-- ТЕКСТ (на десктопе — слева под заголовком; на мобилке — под столом) -->
+    <!-- ТЕКСТ: десктоп — слева под заголовком; мобилка — под столом -->
     <div class="f-body-area">
       <p id="f-para1" class="f-para rev-up">Каждый предмет в комнате, который напоминает о незавершённом деле, незаметно забирает внимание. Рабочий стол — самый громкий из них.</p>
       <p id="f-para2" class="f-para rev-up">Психологи называют это когнитивной нагрузкой: фоновый гул, который не даёт до конца отдохнуть, даже когда ноутбук закрыт.</p>
@@ -284,198 +1184,769 @@ body {
   </section>
 </div>
 
-<!-- ═══ AFTER SPACER ═══ -->
-<div class="spacer">
-  <div class="spacer__label">Это финал-кандидат</div>
-  <div class="spacer__sub">Если всё устраивает — переносим в index.html. Если нужны правки — говори что именно.</div>
-</div>
 
-<footer class="pg-ft">
-  <p>Framework — sequence-wow-final.html</p>
+<!-- ════════════════════════════════════════════
+     4. PSYCHOLOGY — тёмный, Split Panels, Text Reveal
+════════════════════════════════════════════ -->
+<section class="fw-focus">
+  <div class="fw-focus__inner">
+
+    <!-- Text column -->
+    <div class="fw-focus__text">
+      <span class="fw-focus__eyebrow">Психология пространства</span>
+      <h2 class="fw-focus__h2">
+        <span class="reveal-wrap"><span class="reveal-inner">Открываете Framework —</span></span>
+        <span class="reveal-wrap"><span class="reveal-inner" style="transition-delay:0.08s">мозг знает, что делать.</span></span>
+        <span class="reveal-wrap"><span class="reveal-inner" style="transition-delay:0.16s">Закрываете — день закончен.</span></span>
+      </h2>
+      <p class="fw-focus__body" data-fade>Обычный рабочий стол — это незакрытая вкладка в голове. Он стоит посреди комнаты и в субботу вечером, и в воскресенье утром, и пока вы пытаетесь посмотреть кино с семьёй. Мозг не выключается, пока физический триггер работы у вас перед глазами.</p>
+      <p class="fw-focus__body" data-fade style="transition-delay:0.1s">Framework возвращает границу. Открыт — режим работы. Закрыт — стена, картина, дом. Никакой силы воли не нужно, чтобы переключиться: переключение делает сам предмет.</p>
+      <p class="fw-focus__punchline" data-fade style="transition-delay:0.2s">Стол, который умеет заканчивать рабочий день за вас.</p>
+    </div>
+
+    <!-- Visual column: SPLIT PANELS -->
+    <div class="split-wrap" aria-label="Два состояния стола">
+      <div class="split-panel">
+        <span class="split-panel__ph-tag">Фото: стол открыт · 4:5</span>
+        <div>
+          <p class="split-panel__label">Открыт — работаю</p>
+          <p class="split-panel__desc">Режим фокуса. Полноценное рабочее место с первого движения.</p>
+        </div>
+      </div>
+      <div class="split-panel">
+        <span class="split-panel__ph-tag">Фото: стол закрыт · 4:5</span>
+        <div>
+          <p class="split-panel__label">Закрыт — живу</p>
+          <p class="split-panel__desc">Комната снова ваша. Картина на стене, никаких напоминаний о работе.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     5. CANVAS SELECTION — fullscreen, Scale Transition
+════════════════════════════════════════════ -->
+<section class="fw-canvas">
+  <!-- 4 crossfading canvas background placeholders -->
+  <div class="fw-canvas__bg"></div>
+  <div class="fw-canvas__bg"></div>
+  <div class="fw-canvas__bg"></div>
+  <div class="fw-canvas__bg"></div>
+
+  <div class="fw-canvas__overlay"></div>
+  <span class="fw-canvas__ph-tag">Фото интерьера с рамой на стене · fullscreen<br>Полотно в раме меняется crossfade</span>
+
+  <div class="fw-canvas__content" data-scale>
+    <h2 class="fw-canvas__h2">Ваше полотно.<br>Ваш интерьер.<br>Ваш Framework.</h2>
+    <p class="fw-canvas__sub">10 готовых картин на выбор — или загрузите своё изображение, и мы напечатаем.</p>
+    <!-- Canvas thumbnail strip -->
+    <div class="fw-canvas__thumbs-outer">
+      <p class="fw-canvas__thumbs-hint">← листайте, все 10 →</p>
+    <div class="fw-canvas__thumbs" aria-label="Выбор полотна">
+      <div class="fw-canvas__thumb" title="Скандинавский лес"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Абстракция"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Ботаника"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Минимализм"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Горы"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Ваше фото"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Море"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Цветы"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Геометрия"><div class="fw-canvas__thumb-fill"></div></div>
+      <div class="fw-canvas__thumb" title="Ваш снимок"><div class="fw-canvas__thumb-fill"></div></div>
+    </div><!-- /.fw-canvas__thumbs -->
+    </div><!-- /.fw-canvas__thumbs-outer -->
+    <a class="btn btn-white" href="/compare"><span>Подобрать для себя</span></a>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     6. LIFESTYLE GALLERY — Stagger + 3D Tilt + Clip-path Hover
+════════════════════════════════════════════ -->
+<section class="fw-life">
+  <div class="fw-life__inner">
+
+    <div class="fw-life__head">
+      <h2 class="fw-life__h2">
+        <span class="reveal-wrap"><span class="reveal-inner">Вписывается везде</span></span>
+      </h2>
+      <p class="fw-life__sub" data-fade>Скандинавский минимализм, японский лофт, классика или бохо — Framework не диктует стиль, а дополняет ваш.</p>
+    </div>
+
+    <div class="fw-life__grid stagger-group">
+      <article class="life-card stagger-item" tabindex="0">
+        <div class="life-card__bg"></div>
+        <span class="life-card__ph-tag">Скандинавский стиль · 4:5</span>
+        <div class="life-card__hover"><p class="life-card__hover-text">Скандинавский минимализм</p></div>
+      </article>
+      <article class="life-card stagger-item" tabindex="0">
+        <div class="life-card__bg"></div>
+        <span class="life-card__ph-tag">Лофт · 4:5</span>
+        <div class="life-card__hover"><p class="life-card__hover-text">Индустриальный лофт</p></div>
+      </article>
+      <article class="life-card stagger-item" tabindex="0">
+        <div class="life-card__bg"></div>
+        <span class="life-card__ph-tag">Спальня · 4:5</span>
+        <div class="life-card__hover"><p class="life-card__hover-text">Спальня или гостиная</p></div>
+      </article>
+      <article class="life-card stagger-item" tabindex="0">
+        <div class="life-card__bg"></div>
+        <span class="life-card__ph-tag">Домашний офис · 4:5</span>
+        <div class="life-card__hover"><p class="life-card__hover-text">Домашний офис</p></div>
+      </article>
+      <article class="life-card stagger-item" tabindex="0">
+        <div class="life-card__bg"></div>
+        <span class="life-card__ph-tag">Минимализм · 4:5</span>
+        <div class="life-card__hover"><p class="life-card__hover-text">Японский минимализм</p></div>
+      </article>
+      <article class="life-card stagger-item" tabindex="0">
+        <div class="life-card__bg"></div>
+        <span class="life-card__ph-tag">Бохо · 4:5</span>
+        <div class="life-card__hover"><p class="life-card__hover-text">Бохо и натуральные текстуры</p></div>
+      </article>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     7. SPECS — Scroll Counter, Horizontal Slider, 3D Tilt
+════════════════════════════════════════════ -->
+<section class="fw-specs">
+  <div class="fw-specs__inner">
+
+    <!-- Heading -->
+    <div class="fw-specs__head">
+      <h2 class="fw-specs__h2">
+        <span class="reveal-wrap"><span class="reveal-inner">Гордимся этими параметрами</span></span>
+      </h2>
+      <p class="fw-specs__hero-sub" data-fade>Усиленные петли разработаны специально для Framework. Запас прочности в 2 раза от рабочей нагрузки.</p>
+    </div>
+
+    <!-- 4 big counters -->
+    <div class="fw-specs__counters">
+      <div class="fw-specs__stat">
+        <div class="fw-specs__counter-wrap">
+          <span class="fw-specs__counter-num" data-count="60">0</span>
+          <span class="fw-specs__counter-unit">кг</span>
+        </div>
+        <p class="fw-specs__stat-label">Максимальная нагрузка</p>
+      </div>
+      <div class="fw-specs__stat">
+        <div class="fw-specs__counter-wrap">
+          <span class="fw-specs__counter-num" data-count="14">0</span>
+          <span class="fw-specs__counter-unit">см</span>
+        </div>
+        <p class="fw-specs__stat-label">Глубина в закрытом виде</p>
+      </div>
+      <div class="fw-specs__stat">
+        <div class="fw-specs__counter-wrap">
+          <span class="fw-specs__counter-num" data-count="20">0</span>
+          <span class="fw-specs__counter-unit">мин</span>
+        </div>
+        <p class="fw-specs__stat-label">Монтаж</p>
+      </div>
+      <div class="fw-specs__stat">
+        <div class="fw-specs__counter-wrap">
+          <span class="fw-specs__counter-num" data-count="8">0</span>
+          <span class="fw-specs__counter-unit">точек</span>
+        </div>
+        <p class="fw-specs__stat-label">Крепления в стену</p>
+      </div>
+    </div>
+
+    <!-- Stagger list of other specs -->
+    <ul class="fw-specs__list stagger-group">
+      <li class="fw-specs__list-item stagger-item">
+        <span class="fw-specs__list-val">900 × 650 мм</span>
+        <span class="fw-specs__list-name">Рабочая поверхность</span>
+        <span class="fw-specs__list-desc">Без ощущения тесноты — монитор, ноутбук, блокнот и чашка чая.</span>
+      </li>
+      <li class="fw-specs__list-item stagger-item">
+        <span class="fw-specs__list-val">Egger</span>
+        <span class="fw-specs__list-name">ЛДСП и МДФ</span>
+        <span class="fw-specs__list-desc">Европейский класс эмиссии формальдегида. Безопасно для спальни и детской.</span>
+      </li>
+      <li class="fw-specs__list-item stagger-item">
+        <span class="fw-specs__list-val">Холст</span>
+        <span class="fw-specs__list-name">Печать полотна</span>
+        <span class="fw-specs__list-desc">Как в галерее, без пластикового блеска — с фактурой настоящей картины.</span>
+      </li>
+      <li class="fw-specs__list-item stagger-item">
+        <span class="fw-specs__list-val">Россия</span>
+        <span class="fw-specs__list-name">Производство</span>
+        <span class="fw-specs__list-desc">Под собственным контролем — каждый стол проходит проверку перед отправкой.</span>
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     8. INSTALLATION — Stagger, Counter «20»
+════════════════════════════════════════════ -->
+<section class="fw-install">
+  <div class="fw-install__inner">
+
+    <div class="fw-install__head">
+      <div class="fw-install__count-row">
+        <span class="fw-install__count-prefix">Сборка за</span>
+        <span class="fw-install__count-num" data-count="20" id="install-counter">0</span>
+        <span class="fw-install__count-unit">минут</span>
+      </div>
+      <h2 class="fw-install__h2">
+        <span class="reveal-wrap"><span class="reveal-inner">Один человек. Без мастера.</span></span>
+      </h2>
+      <p class="fw-install__sub" data-fade>Обычная дрель и отвёртка, весь крепёж и компактный уровень в комплекте. Соберёт любой.</p>
+    </div>
+
+    <div class="fw-install__grid stagger-group">
+
+      <div class="step-card stagger-item">
+        <div class="step-card__img" data-wipe>
+          <span class="ph__tag">Фото: шаблон на стене, 8 точек разметки · 4:3</span>
+        </div>
+        <p class="step-card__num">Шаг 1</p>
+        <h3 class="step-card__title">Размечаем стену</h3>
+        <p class="step-card__desc">Прикладываем бумажный шаблон к стене, отмечаем 8 точек сверления. Уровень в комплекте — всё встанет ровно.</p>
+      </div>
+
+      <div class="step-card stagger-item">
+        <div class="step-card__img">
+          <span class="ph__tag">Фото: дрель в стене, кронштейн · 4:3</span>
+        </div>
+        <p class="step-card__num">Шаг 2</p>
+        <h3 class="step-card__title">Крепим кронштейн</h3>
+        <p class="step-card__desc">Сверлим, забиваем дюбеля, прикручиваем кронштейн болтами. Занимает 5 минут.</p>
+      </div>
+
+      <div class="step-card stagger-item">
+        <div class="step-card__img">
+          <span class="ph__tag">Фото: стол навешивается на кронштейн · 4:3</span>
+        </div>
+        <p class="step-card__num">Шаг 3</p>
+        <h3 class="step-card__title">Навешиваем стол</h3>
+        <p class="step-card__desc">Опускаем столешницу на кронштейн, включаем шнур в розетку. Готово — открывайте и работайте.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     9. MANIFESTO — Text Reveal, Clip-path Wipe
+════════════════════════════════════════════ -->
+<section class="fw-mani">
+  <div class="fw-mani__inner">
+
+    <!-- Media column: images with Clip-path Wipe -->
+    <div class="fw-mani__media" data-fade>
+      <div class="fw-mani__img-main" data-wipe>
+        <span class="ph__tag">Фото/видео: производство, сборка · 16:9</span>
+      </div>
+      <div class="fw-mani__img-row">
+        <div class="fw-mani__img-small" data-wipe style="transition-delay:0.15s">
+          <span class="ph__tag">Макро: петля · 1:1</span>
+        </div>
+        <div class="fw-mani__img-small" data-wipe style="transition-delay:0.30s">
+          <span class="ph__tag">Макро: поверхность холста · 1:1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text column -->
+    <div class="fw-mani__text">
+      <h2 class="fw-mani__h2" data-fade>Мы могли бы сделать это дешевле.</h2>
+      <p class="fw-mani__lead" data-fade style="transition-delay:0.1s">Мы решили не делать этого.</p>
+      <p class="fw-mani__body" data-fade style="transition-delay:0.1s">Мебельная промышленность тихо нормализовала одноразовость. Купите дёшево, проживите с этим несколько лет, выбросьте. Цена низкая, потому что срок службы короткий — и кто-то другой оплачивает разницу: свалка, лес, ваше время на повторную сборку.</p>
+      <p class="fw-mani__body" data-fade style="transition-delay:0.18s">Да, собирать Framework в России своими руками сложнее и дороже, чем заливать рынок контейнерами дешёвой плоской мебели. Но именно это гарантирует, что каждый стол выглядит безупречно с момента распаковки, работает безотказно — и продолжает ощущаться так же солидно через десять лет.</p>
+      <p class="fw-mani__punchline" data-fade style="transition-delay:0.26s">Стол, который служит дольше, в итоге стоит меньше.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     10. URGENCY CTA — таймер обратного отсчёта
+════════════════════════════════════════════ -->
+<section class="fw-urgency">
+  <div class="fw-urgency__inner">
+    <p class="fw-urgency__eyebrow" data-fade>Акция заканчивается через</p>
+    <h2 class="fw-urgency__h2" data-fade>Последние столы<br>по стартовой цене</h2>
+    <p class="fw-urgency__sub" data-fade>После окончания предзаказа цена на M Light вырастет на 4 000 ₽</p>
+    <div class="fw-urgency__countdown" data-fade>
+      <div class="fw-urgency__cd-block">
+        <div class="fw-urgency__cd-num" id="fw-cd-h">47</div>
+        <div class="fw-urgency__cd-label">часов</div>
+      </div>
+      <div class="fw-urgency__cd-sep">:</div>
+      <div class="fw-urgency__cd-block">
+        <div class="fw-urgency__cd-num" id="fw-cd-m">23</div>
+        <div class="fw-urgency__cd-label">минут</div>
+      </div>
+      <div class="fw-urgency__cd-sep">:</div>
+      <div class="fw-urgency__cd-block">
+        <div class="fw-urgency__cd-num" id="fw-cd-s">11</div>
+        <div class="fw-urgency__cd-label">секунд</div>
+      </div>
+    </div>
+    <div data-fade>
+      <a class="btn btn-accent fw-urgency__btn" href="/shop"><span>Заказать за 25 000 ₽</span></a>
+      <p class="fw-urgency__micro">Бесплатная доставка · Гарантия 1 год · Монтаж за 20 минут</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     11. FOOTER
+════════════════════════════════════════════ -->
+<footer class="fw-footer">
+  <div class="fw-footer__inner">
+
+    <!-- Trust facts (перенесены из удалённой trust-полосы) -->
+    <div class="fw-footer__trust">
+      <div class="fw-footer__trust-item">
+        <div class="fw-footer__trust-icon">🇷🇺</div>
+        <span class="fw-footer__trust-text">Сделано в России</span>
+      </div>
+      <div class="fw-footer__trust-item">
+        <div class="fw-footer__trust-icon">🚚</div>
+        <span class="fw-footer__trust-text">Доставка по всей РФ</span>
+      </div>
+      <div class="fw-footer__trust-item">
+        <div class="fw-footer__trust-icon">✓</div>
+        <span class="fw-footer__trust-text">Гарантия 1 год</span>
+      </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="fw-footer__top">
+      <div>
+        <a class="fw-footer__logo" href="/">Frame<span class="fw-footer__logo-accent">work</span></a>
+        <p class="fw-footer__tagline">Настенный складной стол-картина.<br>Работа прячется. Дом остаётся.</p>
+      </div>
+
+      <div class="fw-footer__cols">
+        <div>
+          <p class="fw-footer__col-title">Магазин</p>
+          <ul class="fw-footer__links">
+            <li><a href="/shop">Все модели</a></li>
+            <li><a href="/shop/m-premium">M Premium</a></li>
+            <li><a href="/shop/m-light">M Light</a></li>
+            <li><a class="soon" href="#">L Premium (предзаказ)</a></li>
+            <li><a class="soon" href="#">L Light (предзаказ)</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="fw-footer__col-title">О продукте</p>
+          <ul class="fw-footer__links">
+            <li><a href="/about-product">Концепция</a></li>
+            <li><a href="/compare">Сравнение моделей</a></li>
+            <li><a href="/installation">Установка и сборка</a></li>
+            <li><a href="/about-product#materials">Материалы</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="fw-footer__col-title">Поддержка</p>
+          <ul class="fw-footer__links">
+            <li><a href="/support">FAQ</a></li>
+            <li><a href="/delivery">Доставка и оплата</a></li>
+            <li><a href="/support#warranty">Гарантия</a></li>
+            <li><a href="/support#return">Возврат 14 дней</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="fw-footer__col-title">Компания</p>
+          <ul class="fw-footer__links">
+            <li><a href="/about">О бренде</a></li>
+            <li><a href="/business">Для бизнеса</a></li>
+            <li><a href="/about#contacts">Контакты</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="fw-footer__bottom">
+      <div>
+        <p class="fw-footer__copy">© 2026 Framework. Все права защищены.</p>
+        <p class="fw-footer__copy">ИП Фамилия Имя Отчество · ИНН XXXXXXXXXXXX</p>
+      </div>
+      <div class="fw-footer__legal">
+        <a href="/legal/offer">Публичная оферта</a>
+        <a href="/legal/privacy">Политика конфиденциальности</a>
+        <a href="/legal/personal-data">Обработка персональных данных</a>
+      </div>
+    </div>
+
+  </div>
 </footer>
 
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
 <script>
 (function () {
   'use strict';
 
-  var BASE        = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
-  var TOTAL       = 60;
-  var PIN_D       = 2400;
-  var PIN_M       = 1300;
-  var REDUCED     = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* Кадры держатся на открытом столе до CLOSE_START,
-     затем складываются до CLOSE_END (~50% пина). */
-  var CLOSE_START = 0.48;
-  var CLOSE_END   = 0.97;
+  /* ── Utils ── */
+  function norm(val, s, e) { return Math.max(0, Math.min(1, (val-s)/(e-s))); }
+  function smooth(t)       { return t*t*(3-2*t); }
+  function lerp(a, b, t)   { return a+(b-a)*t; }
 
-  function pad(i) { var s = String(i+1); while(s.length<4) s='0'+s; return s; }
-  function norm(v, lo, hi) { return Math.max(0, Math.min(1, (v-lo)/(hi-lo))); }
-  function smooth(t) { return t*t*(3-2*t); }
+  /* ══════════════════════════════════════
+     2. HERO: content fade on scroll + scroll indicator hide
+  ══════════════════════════════════════ */
+  var heroSection = document.getElementById('fw-hero');
+  var heroContent = document.getElementById('fw-hero-content');
+  var heroScroll  = document.getElementById('fw-hero-scroll');
 
-  /* ══════════════════════════════════════════════
-     Sequence engine
-     cfg: { trackId, sectionId, canvasId, triggers, onReduced }
-     triggers: [{el, threshold}] — fire .in once when p >= threshold
-  ══════════════════════════════════════════════ */
-  function initSeq(cfg) {
-    var track   = document.getElementById(cfg.trackId);
-    var section = document.getElementById(cfg.sectionId);
-    var canvas  = document.getElementById(cfg.canvasId);
-    if (!track || !section || !canvas) return;
+  function onHeroScroll() {
+    if (!heroSection) return;
+    var sy = window.scrollY;
+    var hh = heroSection.offsetHeight;
+    var p  = Math.min(sy / hh, 1);
+    if (heroContent) {
+      var fade = 1 - p * 2.4;
+      heroContent.style.opacity   = Math.max(0, fade);
+      heroContent.style.transform = 'translateY(' + (-p * 44) + 'px)';
+    }
+    if (heroScroll) heroScroll.style.opacity = sy > 40 ? '0' : '1';
+  }
+  window.addEventListener('scroll', onHeroScroll, {passive: true});
 
-    var ctx      = canvas.getContext('2d');
-    var frames   = new Array(TOTAL);
-    var loaded   = new Array(TOTAL);
-    var drawnIdx = -1;
-    var targetIdx = 0;
+  /* ══════════════════════════════════════
+     2B. HERO: word rotator
+  ══════════════════════════════════════ */
+  (function rotateWords() {
+    var rotator = document.getElementById('fw-rotator');
+    if (!rotator) return;
+    var words = rotator.querySelectorAll('.fw-hero__rword');
+    if (words.length < 2) return;
+    var INTERVAL = 2500, EXIT_MS = 600, index = 0;
+    function tick() {
+      if (document.hidden) return;
+      var cur  = words[index];
+      var next = words[(index + 1) % words.length];
+      cur.classList.remove('is-active');
+      cur.classList.add('is-exit');
+      next.classList.add('is-active');
+      (function (ex) {
+        setTimeout(function () {
+          ex.classList.add('is-instant');
+          ex.classList.remove('is-exit');
+          void ex.offsetWidth;
+          ex.classList.remove('is-instant');
+        }, EXIT_MS);
+      })(cur);
+      index = (index + 1) % words.length;
+    }
+    var timer = setInterval(tick, INTERVAL);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) clearInterval(timer);
+      else timer = setInterval(tick, INTERVAL);
+    });
+  })();
 
-    function nearestLoaded(i) {
-      for (var d = 0; d < TOTAL; d++) {
-        if (i-d >= 0    && loaded[i-d]) return i-d;
-        if (i+d < TOTAL && loaded[i+d]) return i+d;
+  /* ══════════════════════════════════════
+     3. PROBLEM: image-sequence scroll-scrub (новый движок)
+     Хореография: стол открыт → текст → складывание + панчлайн одновременно
+  ══════════════════════════════════════ */
+  (function () {
+    var BASE        = 'https://raw.githubusercontent.com/grivedko/fw-renders/main/';
+    var TOTAL       = 60;
+    var PIN_D       = 2400;
+    var PIN_M       = 1300;
+    var NAVBAR_H    = 56; /* высота Tilda-навбара */
+    var REDUCED     = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* Кадры держатся на открытом столе до CLOSE_START,
+       затем складываются до CLOSE_END (~49% пина). */
+    var CLOSE_START = 0.48;
+    var CLOSE_END   = 0.97;
+
+    function pad(i) { var s = String(i+1); while(s.length<4) s='0'+s; return s; }
+
+    /* Инициализация блока */
+    function initSeq(cfg) {
+      var track   = document.getElementById(cfg.trackId);
+      var section = document.getElementById(cfg.sectionId);
+      var canvas  = document.getElementById(cfg.canvasId);
+      if (!track || !section || !canvas) return;
+
+      var ctx      = canvas.getContext('2d');
+      var frames   = new Array(TOTAL);
+      var loaded   = new Array(TOTAL);
+      var drawnIdx = -1;
+      var targetIdx = 0;
+
+      function nearestLoaded(i) {
+        for (var d = 0; d < TOTAL; d++) {
+          if (i-d >= 0    && loaded[i-d]) return i-d;
+          if (i+d < TOTAL && loaded[i+d]) return i+d;
+        }
+        return -1;
       }
-      return -1;
-    }
-    function drawFrame(i) {
-      var use = loaded[i] ? i : nearestLoaded(i);
-      if (use < 0) return;
-      ctx.drawImage(frames[use], 0, 0, canvas.width, canvas.height);
-      drawnIdx = use;
-    }
+      function drawFrame(i) {
+        var use = loaded[i] ? i : nearestLoaded(i);
+        if (use < 0) return;
+        /* clearRect критичен для прозрачных кадров — убирает «призрак» предыдущего */
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(frames[use], 0, 0, canvas.width, canvas.height);
+        drawnIdx = use;
+      }
 
-    for (var i = 0; i < TOTAL; i++) {
-      (function(i) {
-        var img = new Image();
-        img.onload = function() {
-          loaded[i] = true;
-          if (drawnIdx === -1 && i === 0) drawFrame(0);
-          else if (i === targetIdx)        drawFrame(targetIdx);
+      for (var i = 0; i < TOTAL; i++) {
+        (function(i) {
+          var img = new Image();
+          img.onload = function() {
+            loaded[i] = true;
+            if (drawnIdx === -1 && i === 0) drawFrame(0);
+            else if (i === targetIdx)        drawFrame(targetIdx);
+          };
+          img.src = BASE + pad(i) + '.webp';
+          frames[i] = img;
+        })(i);
+      }
+
+      /* Reduced-motion: последний кадр статично + показать весь текст */
+      if (REDUCED) {
+        var last = new Image();
+        last.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(last, 0, 0, canvas.width, canvas.height);
         };
-        img.src = BASE + pad(i) + '.webp';
-        frames[i] = img;
-      })(i);
-    }
-
-    /* Reduced-motion: last frame + show all text */
-    if (REDUCED) {
-      var last = new Image();
-      last.onload = function() { ctx.drawImage(last, 0, 0, canvas.width, canvas.height); };
-      last.src = BASE + pad(TOTAL-1) + '.webp';
-      if (cfg.onReduced) cfg.onReduced();
-      return;
-    }
-
-    /* ── JS pin: position:fixed approach, Tilda-safe ── */
-    var pinState = '';
-    var rafId    = null;
-
-    function getPin() { return window.innerWidth < 768 ? PIN_M : PIN_D; }
-
-    function sizeTrack() {
-      track.style.height = (window.innerHeight + getPin()) + 'px';
-    }
-
-    function applyPin(s, PIN) {
-      pinState = s;
-      if (s === 'before') {
-        section.style.position = 'absolute';
-        section.style.top      = '0';
-        section.style.left     = '0';
-        section.style.width    = '100%';
-      } else if (s === 'fixed') {
-        var r = track.getBoundingClientRect();
-        section.style.position = 'fixed';
-        section.style.top      = '0';
-        section.style.left     = r.left + 'px';
-        section.style.width    = track.offsetWidth + 'px';
-      } else {
-        section.style.position = 'absolute';
-        section.style.top      = PIN + 'px';
-        section.style.left     = '0';
-        section.style.width    = '100%';
+        last.src = BASE + pad(TOTAL-1) + '.webp';
+        if (cfg.onReduced) cfg.onReduced();
+        return;
       }
-    }
 
-    function onScroll() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(function() {
-        rafId = null;
-        var PIN      = getPin();
-        var sy       = window.pageYOffset;
-        var pinStart = track.offsetTop;
-        var p        = Math.max(0, Math.min(1, (sy - pinStart) / PIN));
+      /* JS-пин: position:fixed, Tilda-safe, с оффсетом навбара */
+      var pinState = '';
+      var rafId    = null;
 
-        /* ── Scroll-trigger one-shot text reveals ── */
-        if (cfg.triggers) {
-          for (var t = 0; t < cfg.triggers.length; t++) {
-            var tr = cfg.triggers[t];
-            if (!tr._fired && p >= tr.threshold) {
-              tr._fired = true;
-              tr.el.classList.add('in');
+      function getPin() { return window.innerWidth < 768 ? PIN_M : PIN_D; }
+
+      function sizeTrack() {
+        track.style.height = (window.innerHeight + getPin()) + 'px';
+      }
+
+      function applyPin(s, PIN) {
+        pinState = s;
+        if (s === 'before') {
+          section.style.position = 'absolute';
+          section.style.top      = '0';
+          section.style.left     = '0';
+          section.style.width    = '100%';
+        } else if (s === 'fixed') {
+          var r = track.getBoundingClientRect();
+          section.style.position = 'fixed';
+          section.style.top      = NAVBAR_H + 'px';
+          section.style.left     = r.left + 'px';
+          section.style.width    = track.offsetWidth + 'px';
+        } else {
+          section.style.position = 'absolute';
+          section.style.top      = PIN + 'px';
+          section.style.left     = '0';
+          section.style.width    = '100%';
+        }
+      }
+
+      function onScroll() {
+        if (rafId) return;
+        rafId = requestAnimationFrame(function() {
+          rafId = null;
+          var PIN      = getPin();
+          var sy       = window.pageYOffset;
+          var pinStart = track.offsetTop - NAVBAR_H;
+          var p        = Math.max(0, Math.min(1, (sy - pinStart) / PIN));
+
+          /* Scroll-trigger: one-shot text reveals */
+          if (cfg.triggers) {
+            for (var t = 0; t < cfg.triggers.length; t++) {
+              var tr = cfg.triggers[t];
+              if (!tr._fired && p >= tr.threshold) {
+                tr._fired = true;
+                tr.el.classList.add('in');
+              }
             }
           }
-        }
 
-        /* ── Frame scrub: кадр 0 (открытый стол) держится до CLOSE_START,
-              затем плавно складывается до CLOSE_END ── */
-        var fi = Math.round(smooth(norm(p, CLOSE_START, CLOSE_END)) * (TOTAL-1));
-        if (fi !== drawnIdx) { targetIdx = fi; drawFrame(fi); }
+          /* Frame scrub: открытый стол держится до CLOSE_START, потом складывается */
+          var fi = Math.round(smooth(norm(p, CLOSE_START, CLOSE_END)) * (TOTAL-1));
+          if (fi !== drawnIdx) { targetIdx = fi; drawFrame(fi); }
 
-        /* ── Pin state machine ── */
-        var newState = sy < pinStart        ? 'before'
-                     : sy <= pinStart + PIN ? 'fixed'
-                     : 'after';
-        if (newState !== pinState) {
-          applyPin(newState, PIN);
-        } else if (newState === 'fixed') {
-          var r = track.getBoundingClientRect();
-          section.style.left  = r.left + 'px';
-          section.style.width = track.offsetWidth + 'px';
-        }
+          /* Pin state machine */
+          var newState = sy < pinStart          ? 'before'
+                       : sy <= pinStart + PIN   ? 'fixed'
+                       : 'after';
+          if (newState !== pinState) {
+            applyPin(newState, PIN);
+          } else if (newState === 'fixed') {
+            var r = track.getBoundingClientRect();
+            section.style.left  = r.left + 'px';
+            section.style.width = track.offsetWidth + 'px';
+          }
+        });
+      }
+
+      sizeTrack();
+      applyPin('before', getPin());
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function() { sizeTrack(); pinState = ''; onScroll(); }, { passive: true });
+      window.addEventListener('load',   function() { sizeTrack(); pinState = ''; onScroll(); });
+      window.addEventListener('orientationchange', function() {
+        setTimeout(function() { sizeTrack(); pinState = ''; onScroll(); }, 300);
       });
     }
 
-    sizeTrack();
-    applyPin('before', getPin());
-    onScroll();
-    window.addEventListener('scroll',            onScroll,  { passive: true });
-    window.addEventListener('resize', function() { sizeTrack(); pinState = ''; onScroll(); }, { passive: true });
-    window.addEventListener('load',   function() { sizeTrack(); pinState = ''; onScroll(); });
-    window.addEventListener('orientationchange', function() {
-      setTimeout(function() { sizeTrack(); pinState = ''; onScroll(); }, 300);
+    /* ── Триггеры текста ──
+       0.06  Заголовок — сразу при входе; стол открыт
+       0.18  Первый абзац
+       0.34  Второй абзац
+       0.48  Панчлайн + старт складывания (= CLOSE_START)
+    ── */
+    var tl1   = document.getElementById('f-tl1');
+    var tl2   = document.getElementById('f-tl2');
+    var para1 = document.getElementById('f-para1');
+    var para2 = document.getElementById('f-para2');
+    var punch = document.getElementById('f-punch');
+
+    initSeq({
+      trackId: 'f-track', sectionId: 'f-sec', canvasId: 'f-canvas',
+      triggers: [
+        { el: tl1,   threshold: 0.06 },
+        { el: tl2,   threshold: 0.06 },
+        { el: para1, threshold: 0.18 },
+        { el: para2, threshold: 0.34 },
+        { el: punch, threshold: 0.48 }
+      ],
+      onReduced: function() {
+        [tl1, tl2, para1, para2, punch].forEach(function(el) { if(el) el.classList.add('in'); });
+      }
     });
+  })();
+
+  /* ══════════════════════════════════════
+     IntersectionObserver — Text Reveal + fade + wipe + scale
+  ══════════════════════════════════════ */
+  function makeIO(threshold, rootMargin) {
+    return new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          this.unobserve(e.target);
+        }
+      }.bind(this));
+    }, { threshold: threshold || 0.15, rootMargin: rootMargin || '0px 0px -50px 0px' });
   }
 
-  /* ════════════════════════════════════════════════
-     Инициализация блока
-
-     Заголовок (Text Reveal):
-       tl1, tl2 — обе строки запускаются при p ≥ 0.06,
-       CSS transition-delay 0.14s на второй строке даёт стаггер.
-
-     Текст body — поочерёдно через нарастающие пороги.
-  ════════════════════════════════════════════════ */
-  var tl1   = document.getElementById('f-tl1');
-  var tl2   = document.getElementById('f-tl2');
-  var para1 = document.getElementById('f-para1');
-  var para2 = document.getElementById('f-para2');
-  var punch = document.getElementById('f-punch');
-
-  initSeq({
-    trackId: 'f-track', sectionId: 'f-sec', canvasId: 'f-canvas',
-    triggers: [
-      { el: tl1,   threshold: 0.06 },   /* Заголовок — сразу при входе; стол открыт              */
-      { el: tl2,   threshold: 0.06 },   /* CSS delay 0.14s стаггерит вторую строку               */
-      { el: para1, threshold: 0.18 },   /* Абзацы — стол всё ещё стоит открытым                  */
-      { el: para2, threshold: 0.34 },
-      { el: punch, threshold: 0.48 }    /* Панчлайн + старт складывания — одновременно (CLOSE_START) */
-    ],
-    onReduced: function() {
-      [tl1, tl2, para1, para2, punch].forEach(function(el) { el.classList.add('in'); });
-    }
+  var io = makeIO(0.15);
+  document.querySelectorAll('[data-fade], [data-wipe], [data-scale]').forEach(function (el) {
+    io.observe(el);
   });
+
+  /* ── Reveal-wrap observer (fix: observe wrap, not inner) ──
+     .reveal-inner starts at translateY(108%) which puts its bounding
+     rect BELOW the viewport — IntersectionObserver would never fire
+     on the inner itself. We observe the visible WRAP instead. */
+  var revealIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      revealIO.unobserve(e.target);
+      var inner = e.target.querySelector(':scope > .reveal-inner');
+      if (inner) inner.classList.add('in');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+  document.querySelectorAll('.reveal-wrap').forEach(function (el) {
+    revealIO.observe(el);
+  });
+
+  /* ══════════════════════════════════════
+     Stagger groups
+  ══════════════════════════════════════ */
+  var staggerIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      staggerIO.unobserve(e.target);
+      var items = e.target.querySelectorAll('.stagger-item');
+      items.forEach(function (item, i) {
+        setTimeout(function () { item.classList.add('in'); }, i * 90);
+      });
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.stagger-group').forEach(function (g) {
+    staggerIO.observe(g);
+  });
+
+  /* ══════════════════════════════════════
+     Scroll counter  [data-count]
+  ══════════════════════════════════════ */
+  var counterIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      counterIO.unobserve(e.target);
+      var el     = e.target;
+      var target = parseInt(el.dataset.count, 10);
+      var dur    = 1400;
+      var start  = performance.now();
+      function tick(now) {
+        var prog = Math.min((now - start) / dur, 1);
+        var ease = 1 - Math.pow(1 - prog, 3);
+        el.textContent = Math.round(ease * target);
+        if (prog < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(function (el) {
+    counterIO.observe(el);
+  });
+
+  /* ══════════════════════════════════════
+     3D Tilt — life-card & spec-card
+  ══════════════════════════════════════ */
+  function initTilt(selector, maxDeg) {
+    document.querySelectorAll(selector).forEach(function (card) {
+      card.addEventListener('mousemove', function (e) {
+        var r = card.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width  - 0.5;
+        var y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform = 'perspective(640px) rotateY(' + (x*maxDeg) + 'deg) rotateX(' + (-y*maxDeg) + 'deg) scale(1.025)';
+      });
+      card.addEventListener('mouseleave', function () {
+        card.style.transform = '';
+      });
+    });
+  }
+  initTilt('.life-card', 12);
+
+  /* ══════════════════════════════════════
+     Countdown timer — urgency CTA
+  ══════════════════════════════════════ */
+  (function () {
+    var cdH = document.getElementById('fw-cd-h');
+    var cdM = document.getElementById('fw-cd-m');
+    var cdS = document.getElementById('fw-cd-s');
+    if (!cdH) return;
+    var secs = 47 * 3600 + 23 * 60 + 11;
+    function cdTick() {
+      if (secs <= 0) return;
+      secs--;
+      var h = Math.floor(secs / 3600);
+      var m = Math.floor((secs % 3600) / 60);
+      var s = secs % 60;
+      cdH.textContent = String(h).padStart(2, '0');
+      cdM.textContent = String(m).padStart(2, '0');
+      cdS.textContent = String(s).padStart(2, '0');
+    }
+    setInterval(cdTick, 1000);
+  })();
 
 })();
 </script>
+
 </body>
 </html>
